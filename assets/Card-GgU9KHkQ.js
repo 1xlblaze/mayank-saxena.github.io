@@ -1,0 +1,1 @@
+import{r as n,j as s}from"./index-CruK4Nyc.js";function o(){const[t,e]=n.useState(0);return s.jsxs("div",{className:"card",children:[s.jsxs("button",{onClick:()=>e(r=>r+1),children:["count is ",t]}),s.jsxs("p",{children:["Edit ",s.jsx("code",{children:"src/App.jsx"})," and save to test HMR"]})]})}export{o as default};
