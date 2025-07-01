@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://mayank-saxena.github.io",
+  "homepage": "https://1xlblaze.github.io/mayank-saxena.github.io",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
