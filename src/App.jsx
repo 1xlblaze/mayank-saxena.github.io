@@ -687,7 +687,12 @@ export default function App() {
             <a className="btn btn-primary" href="#projects">
               View selected work
             </a>
-            <a className="btn btn-ghost" href="mailto:mayankidmsaxena@gmail.com">
+            <a
+              className="btn btn-ghost"
+              href="https://mail.google.com/mail/?view=cm&fs=1&to=mayankidmsaxena@gmail.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Let’s talk
             </a>
             <a className="btn btn-ghost" href={RESUME_PDF} download="Mayank-August-2026-2.pdf">
@@ -908,7 +913,12 @@ export default function App() {
           <h2>Building high-throughput, real-time, or agentic systems?</h2>
           <p>Open to senior backend, platform, and agentic systems conversations.</p>
           <div className="cta-row">
-            <a className="btn btn-primary" href="mailto:mayankidmsaxena@gmail.com">
+            <a
+              className="btn btn-primary"
+              href="https://mail.google.com/mail/?view=cm&fs=1&to=mayankidmsaxena@gmail.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               mayankidmsaxena@gmail.com
             </a>
             <a
