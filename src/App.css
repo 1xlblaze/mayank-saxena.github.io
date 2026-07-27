@@ -767,6 +767,91 @@ a:hover {
   filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.35));
 }
 
+.arch-svg.interactive .arch-box {
+  transition: filter 0.2s ease, stroke-width 0.2s ease, fill 0.2s ease;
+  cursor: default;
+}
+
+.arch-svg.interactive .arch-node:hover,
+.design-diagram:hover .arch-box-accent {
+  filter: url(#glow);
+  stroke-width: 2.4;
+}
+
+.arch-line {
+  stroke: #3dd6c6;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-dasharray: 5 4;
+  animation: dash-flow 1.8s linear infinite;
+}
+
+@keyframes dash-flow {
+  to {
+    stroke-dashoffset: -18;
+  }
+}
+
+.code-snip {
+  margin: 1rem 0 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  background: #0a1017;
+}
+
+.code-snip-toggle {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  border: 0;
+  background: rgba(61, 214, 198, 0.06);
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.code-snip-toggle strong {
+  display: block;
+  font-size: 0.95rem;
+}
+
+.code-snip-toggle em {
+  font-style: normal;
+  color: var(--accent);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.code-snip-chevron {
+  color: var(--muted);
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.code-snip-body {
+  margin: 0;
+  padding: 1rem 1.1rem 1.15rem;
+  border-top: 1px solid var(--line);
+  color: #b7f0e7;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+  line-height: 1.55;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arch-line {
+    animation: none;
+  }
+}
+
 .arch-box {
   fill: #121a24;
   stroke: #3dd6c6;
@@ -795,13 +880,6 @@ a:hover {
   fill: #93a4b8;
   font-size: 11px;
   font-family: "Instrument Sans", sans-serif;
-}
-
-.arch-line {
-  stroke: #3dd6c6;
-  stroke-width: 1.6;
-  stroke-linecap: round;
-  stroke-dasharray: 4 3;
 }
 
 .arch-caption {

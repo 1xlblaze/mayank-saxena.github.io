@@ -1,11 +1,36 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 
+const RESUME_PDF = `${import.meta.env.BASE_URL}Mayank_Saxena_Resume.pdf`;
+
+function CodeSnippet({ title, language, code }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className={`code-snip ${open ? "open" : ""}`}>
+      <button type="button" className="code-snip-toggle" onClick={() => setOpen((v) => !v)} aria-expanded={open}>
+        <span>
+          <strong>{title}</strong>
+          <em>{language}</em>
+        </span>
+        <span className="code-snip-chevron">{open ? "Hide" : "Show code"}</span>
+      </button>
+      {open && <pre className="code-snip-body">{code}</pre>}
+    </div>
+  );
+}
+
 function ArchDiagram({ type }) {
   if (type === "lead-assist") {
     return (
-      <svg className="arch-svg" viewBox="0 0 920 280" role="img" aria-label="Lead Assist architecture">
+      <svg className="arch-svg interactive" viewBox="0 0 920 280" role="img" aria-label="Lead Assist architecture">
         <defs>
+          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
+            <feMerge>
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
           <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
             <path d="M0,0 L6,3 L0,6 Z" fill="#3dd6c6" />
           </marker>
@@ -25,7 +50,7 @@ function ArchDiagram({ type }) {
               width={w}
               height={h}
               rx="10"
-              className={`arch-box ${i === 3 ? "arch-box-warn" : ""} ${i === 5 ? "arch-box-accent" : ""}`}
+              className={`arch-box arch-node ${i === 3 ? "arch-box-warn" : ""} ${i === 5 ? "arch-box-accent" : ""}`}
             />
             <text x={x + w / 2} y={y + 24} textAnchor="middle" className="arch-title">
               {t}
@@ -62,7 +87,7 @@ function ArchDiagram({ type }) {
 
   if (type === "gatekeeper") {
     return (
-      <svg className="arch-svg" viewBox="0 0 940 300" role="img" aria-label="QA Gatekeeper pattern">
+      <svg className="arch-svg interactive" viewBox="0 0 940 300" role="img" aria-label="QA Gatekeeper pattern">
         <defs>
           <marker id="arrow2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
             <path d="M0,0 L6,3 L0,6 Z" fill="#3dd6c6" />
@@ -132,7 +157,7 @@ function ArchDiagram({ type }) {
 
   if (type === "recon") {
     return (
-      <svg className="arch-svg" viewBox="0 0 940 320" role="img" aria-label="ReconOps pattern">
+      <svg className="arch-svg interactive" viewBox="0 0 940 320" role="img" aria-label="ReconOps pattern">
         <defs>
           <marker id="arrow3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
             <path d="M0,0 L6,3 L0,6 Z" fill="#3dd6c6" />
@@ -261,8 +286,25 @@ const projects = [
       "Latency: agent display p95 targeted well under interactive thresholds (~60% cut vs prior)",
       "Scale: 10K+ concurrent SSE connections on Go goroutines",
       "Privacy: no raw PII on Kafka / analytics topics",
-      "Failover: multi-broker MSK; publish skipped when session gate missing",
+      "Failover: multi-broker bus; publish skipped when session gate missing",
     ],
+    snippet: {
+      title: "Go SSE fan-out (illustrative)",
+      language: "Go",
+      code: `// Pattern: one goroutine per subscriber, non-blocking fan-out
+func (h *Hub) Broadcast(evt Event) {
+    h.mu.RLock()
+    defer h.mu.RUnlock()
+    for id, ch := range h.subs {
+        select {
+        case ch <- evt: // deliver
+        default:
+            // slow client — drop or disconnect policy
+            go h.drop(id)
+        }
+    }
+}`,
+    },
   },
   {
     id: "gatekeeper",
@@ -370,6 +412,28 @@ const projects = [
       "HITL on the human-approved daily path",
       "Exact API contracts withheld publicly",
     ],
+    snippet: {
+      title: "Agent graph shape (illustrative)",
+      language: "Python",
+      code: `# Pattern: parallel stages then HITL before side effects
+graph = StateGraph(ReconState)
+graph.add_node("ingest", ingest)
+graph.add_node("stage_a", stage_a)
+graph.add_node("stage_b", stage_b)
+graph.add_node("stage_c", stage_c)
+graph.add_node("aggregate", aggregate)
+graph.add_node("hitl", hitl_pause)
+graph.add_node("actions", execute_actions)
+
+graph.add_edge("ingest", "stage_a")
+graph.add_edge("ingest", "stage_b")
+graph.add_edge("ingest", "stage_c")
+graph.add_edge("stage_a", "aggregate")
+graph.add_edge("stage_b", "aggregate")
+graph.add_edge("stage_c", "aggregate")
+graph.add_conditional_edges("aggregate", needs_human, {"yes": "hitl", "no": "actions"})
+graph.add_edge("hitl", "actions")`,
+    },
   },
   {
     id: "indiamart-buyleads",
@@ -484,6 +548,20 @@ const projects = [
       AI: ["RAG", "LLMs"],
       Safety: ["SQL AST"],
       Language: ["Python"],
+    },
+    snippet: {
+      title: "AST SQL safety gate (illustrative)",
+      language: "Python",
+      code: `FORBIDDEN = {"Drop", "Delete", "Truncate", "Alter"}
+
+def assert_safe_select(sql: str, allowed_tables: set[str]) -> None:
+    tree = sqlglot.parse_one(sql)
+    if tree.find(sqlglot.exp.Drop) or tree.find(sqlglot.exp.Delete):
+        raise ValueError("destructive statement blocked")
+    tables = {t.name for t in tree.find_all(sqlglot.exp.Table)}
+    if not tables.issubset(allowed_tables):
+        raise ValueError("unauthorized table reference")
+    # only SELECT-shaped trees proceed to the warehouse`,
     },
   },
 ];
@@ -612,6 +690,9 @@ export default function App() {
             <a className="btn btn-ghost" href="mailto:mayankidmsaxena@gmail.com">
               Let’s talk
             </a>
+            <a className="btn btn-ghost" href={RESUME_PDF} download="Mayank_Saxena_Resume.pdf">
+              Download Resume (PDF)
+            </a>
           </div>
         </div>
       </header>
@@ -699,6 +780,10 @@ export default function App() {
                   </div>
 
                   <StackBadges groups={p.stackGroups} />
+
+                  {p.snippet && (
+                    <CodeSnippet title={p.snippet.title} language={p.snippet.language} code={p.snippet.code} />
+                  )}
 
                   {p.diagram && (
                     <div className="design-panel">
