@@ -457,11 +457,6 @@ const projects = [
       API: ["Go"],
       Data: ["PostgreSQL", "PostGIS", "Supabase"],
     },
-    trace: `$ curl -s "$BFF/api/search?lat=28.66&lng=77.43&km=8" | jq '.artists|length'
-12
-$ curl -s -X POST "$BFF/api/bookings" -d '{"artistId":"a_18","slot":"2026-08-01T10:00+05:30"}'
-{"id":"bk_1042","status":"CONFIRMED"}
-# PostGIS: ST_DWithin(geom, point, meters) on artists`,
   },
   {
     id: "nl2sql",
