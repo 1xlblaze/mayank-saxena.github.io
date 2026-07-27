@@ -209,6 +209,20 @@ const projects = [
       "Fail-fast multi-broker MSK config in production",
       "Dedicated Lead Assist Redis vs main BFF cache",
     ],
+    sequence: [
+      "Client lending UI emits schema fetch/submit",
+      "NestJS BFF checks Redis session gate",
+      "PII mask (PAN / Aadhaar / phone / DOB)",
+      "Kafka publish (MSK topic)",
+      "Go SSE fan-out + heartbeats",
+      "Agent dashboard renders live stage",
+    ],
+    constraints: [
+      "Latency: agent display p95 targeted well under interactive thresholds (~60% cut vs prior)",
+      "Scale: 10K+ concurrent SSE connections on Go goroutines",
+      "Privacy: no raw PII on Kafka / analytics topics",
+      "Failover: multi-broker MSK; publish skipped when session gate missing",
+    ],
   },
   {
     id: "gatekeeper",
@@ -243,6 +257,18 @@ const projects = [
       "Slack approval as the merge control plane",
       "Staging journey must pass before allow",
       "Fail closed when webhook secrets are missing",
+    ],
+    sequence: [
+      "Bitbucket PR opened",
+      "Cursor AI analysis",
+      "Slack interactive human approval",
+      "Staging journey checks",
+      "Allow or block merge",
+    ],
+    constraints: [
+      "Human-in-the-loop required for merge allow",
+      "Fail closed if webhook / secrets unset",
+      "No silent bypass of staging gates",
     ],
   },
   {
@@ -279,6 +305,18 @@ const projects = [
       "No unsafe bypass flags in prod templates",
       "Prometheus annotations on central-ops",
     ],
+    sequence: [
+      "Schedule / manual trigger",
+      "Argo Workflow starts on EKS",
+      "Async POST then poll until completed",
+      "Artifacts to S3 / DWH",
+      "Prometheus scrape + ops visibility",
+    ],
+    constraints: [
+      "Green only when status = completed (no false-green)",
+      "Secrets via AWS SM / ExternalSecrets",
+      "Stage vs prod URL targeting explicit in params",
+    ],
   },
   {
     id: "mcp",
@@ -312,6 +350,19 @@ const projects = [
       "Validate before side effects",
       "Tool allowlists over open function calling",
       "Structured outputs for downstream APIs",
+    ],
+    sequence: [
+      "User / system request",
+      "Orchestrator (Strands / LangGraph)",
+      "MCP server tool discovery",
+      "JSON Schema validation",
+      "Backend tool execution",
+      "Structured response to caller",
+    ],
+    constraints: [
+      "Invalid JSON never reaches tools",
+      "Allowlisted tools only",
+      "Deterministic structured outputs for APIs",
     ],
     trace: `$ agent.run --goal "fetch_lender_status" --schema strict
 > mcp.discover tools=[lms.getStatus, s3.putArtifact]
@@ -427,7 +478,7 @@ export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [visible, setVisible] = useState(false);
-  const [modal, setModal] = useState(null);
+  const [enlarged, setEnlarged] = useState(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -440,18 +491,18 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (!modal) return undefined;
-    const onKey = (e) => e.key === "Escape" && setModal(null);
+    if (!enlarged) return undefined;
+    const onKey = (e) => e.key === "Escape" && setEnlarged(null);
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", onKey);
     return () => {
       document.body.style.overflow = "";
       window.removeEventListener("keydown", onKey);
     };
-  }, [modal]);
+  }, [enlarged]);
 
   const year = new Date().getFullYear();
-  const active = projects.find((p) => p.id === modal);
+  const active = projects.find((p) => p.id === enlarged);
 
   return (
     <div className={`page ${visible ? "is-ready" : ""}`}>
@@ -599,13 +650,49 @@ export default function App() {
 
                   <StackBadges groups={p.stackGroups} />
 
-                  <div className="project-actions">
-                    {p.diagram && (
-                      <button type="button" className="btn btn-ghost" onClick={() => setModal(p.id)}>
-                        View system design
-                      </button>
-                    )}
-                  </div>
+                  {p.diagram && (
+                    <div className="design-panel">
+                      <div className="design-panel-head">
+                        <div>
+                          <h4>System design</h4>
+                          <p>Sanitized production pattern — no proprietary service names or secrets.</p>
+                        </div>
+                        <button
+                          type="button"
+                          className="btn btn-primary btn-small"
+                          onClick={() => setEnlarged(p.id)}
+                        >
+                          Enlarge diagram
+                        </button>
+                      </div>
+                      <div className="design-diagram inline-diagram">
+                        <ArchDiagram type={p.diagram} />
+                      </div>
+                      {p.sequence && (
+                        <div className="design-cols">
+                          <div>
+                            <h5>Sequence / pipeline</h5>
+                            <ol>
+                              {p.sequence.map((step) => (
+                                <li key={step}>{step}</li>
+                              ))}
+                            </ol>
+                          </div>
+                          <div>
+                            <h5>Constraints &amp; decisions</h5>
+                            <ul>
+                              {(p.constraints || []).map((c) => (
+                                <li key={c}>{c}</li>
+                              ))}
+                              {(p.decisions || []).map((d) => (
+                                <li key={`d-${d}`}>{d}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   {p.trace && (
                     <div className="trace-block">
@@ -713,7 +800,7 @@ export default function App() {
       </footer>
 
       {active && (
-        <div className="modal-backdrop" onClick={() => setModal(null)} role="presentation">
+        <div className="modal-backdrop" onClick={() => setEnlarged(null)} role="presentation">
           <div
             className="modal"
             role="dialog"
@@ -726,7 +813,7 @@ export default function App() {
                 <p className="section-kicker">System design</p>
                 <h3 id="modal-title">{active.title}</h3>
               </div>
-              <button type="button" className="modal-close" onClick={() => setModal(null)} aria-label="Close">
+              <button type="button" className="modal-close" onClick={() => setEnlarged(null)} aria-label="Close">
                 ×
               </button>
             </div>
@@ -734,9 +821,18 @@ export default function App() {
               <ArchDiagram type={active.diagram} />
             </div>
             <div className="modal-decisions">
-              <h4>Key architectural decisions</h4>
+              <h4>Sequence</h4>
+              <ol>
+                {(active.sequence || []).map((s) => (
+                  <li key={s}>{s}</li>
+                ))}
+              </ol>
+              <h4>Constraints &amp; decisions</h4>
               <ul>
-                {active.decisions?.map((d) => (
+                {(active.constraints || []).map((c) => (
+                  <li key={c}>{c}</li>
+                ))}
+                {(active.decisions || []).map((d) => (
                   <li key={d}>{d}</li>
                 ))}
               </ul>

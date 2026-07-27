@@ -666,6 +666,81 @@ a:hover {
   background: transparent;
 }
 
+.design-panel {
+  margin: 1.25rem 0 1rem;
+  padding: 1.15rem;
+  border: 1px dashed rgba(61, 214, 198, 0.4);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(61, 214, 198, 0.08), transparent 45%),
+    rgba(10, 16, 23, 0.9);
+}
+
+.design-panel-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: start;
+  flex-wrap: wrap;
+  margin-bottom: 0.85rem;
+}
+
+.design-panel-head h4 {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  margin-bottom: 0.25rem;
+}
+
+.design-panel-head p {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.btn-small {
+  padding: 0.55rem 1rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  border: 0;
+  font-family: inherit;
+}
+
+.design-diagram,
+.inline-diagram {
+  padding: 0.5rem;
+  border-radius: 12px;
+  background: #070b10;
+  border: 1px solid var(--line);
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
+.design-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.design-cols h5 {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 0.5rem;
+}
+
+.design-cols ol,
+.design-cols ul,
+.modal-decisions ol {
+  padding-left: 1.15rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.design-cols li,
+.modal-decisions li {
+  margin-bottom: 0.35rem;
+}
+
 .trace-block {
   margin-top: 0.5rem;
 }
@@ -856,7 +931,8 @@ a:hover {
   .project-grid,
   .project-detail,
   .skills,
-  .stack-group {
+  .stack-group,
+  .design-cols {
     grid-template-columns: 1fr;
   }
 
