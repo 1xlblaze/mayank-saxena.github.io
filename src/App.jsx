@@ -60,28 +60,31 @@ function ArchDiagram({ type }) {
     );
   }
 
-  if (type === "gatekeeper-recon") {
+  if (type === "gatekeeper") {
     return (
-      <svg className="arch-svg" viewBox="0 0 920 300" role="img" aria-label="Gatekeeper and ReconOps flow">
+      <svg className="arch-svg" viewBox="0 0 940 320" role="img" aria-label="PP QA Gatekeeper architecture">
         <defs>
           <marker id="arrow2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
             <path d="M0,0 L6,3 L0,6 Z" fill="#3dd6c6" />
           </marker>
         </defs>
-        <text x={20} y={28} className="arch-caption">
-          Gatekeeper (PR quality)
+        <text x={20} y={24} className="arch-caption">
+          Intake: Cursor chat QA · Bitbucket PR Gatekeeper · Jira → Cursor Cloud
         </text>
         {[
-          [20, 50, 130, 50, "Bitbucket PR"],
-          [180, 50, 130, 50, "Cursor AI"],
-          [340, 50, 150, 50, "Slack Approve"],
-          [520, 50, 150, 50, "Staging Checks"],
-          [700, 50, 180, 50, "Allow / Block"],
-        ].map(([x, y, w, h, t], i) => (
+          [20, 45, 150, 48, "Webhooks", "Jira / BB / Slack"],
+          [200, 45, 160, 48, "FastAPI :8765", "pp-qa-gatekeeper"],
+          [390, 45, 140, 48, "Mongo", "run log"],
+          [560, 45, 150, 48, "Orchestrators", "workspace jobs"],
+          [740, 45, 160, 48, "Slack Approve", "HITL"],
+        ].map(([x, y, w, h, t, s], i) => (
           <g key={t}>
-            <rect x={x} y={y} width={w} height={h} rx="10" className={`arch-box ${i === 2 ? "arch-box-warn" : ""}`} />
-            <text x={x + w / 2} y={y + 30} textAnchor="middle" className="arch-title">
+            <rect x={x} y={y} width={w} height={h} rx="10" className={`arch-box ${i === 4 ? "arch-box-warn" : ""}`} />
+            <text x={x + w / 2} y={y + 20} textAnchor="middle" className="arch-title">
               {t}
+            </text>
+            <text x={x + w / 2} y={y + 36} textAnchor="middle" className="arch-sub">
+              {s}
             </text>
             {i < 4 && (
               <line
@@ -95,22 +98,23 @@ function ArchDiagram({ type }) {
             )}
           </g>
         ))}
-        <text x={20} y={160} className="arch-caption">
-          ReconOps (Argo on EKS)
+        <text x={20} y={130} className="arch-caption">
+          Dual gates after approval · repos via workspace/repos.manifest.json
         </text>
         {[
-          [20, 180, 150, 50, "Trigger / Cron"],
-          [200, 180, 160, 50, "Argo Workflow"],
-          [390, 180, 160, 50, "Poll → completed"],
-          [580, 180, 140, 50, "S3 / DWH"],
-          [750, 180, 140, 50, "Prometheus"],
-        ].map(([x, y, w, h, t], i) => (
+          [20, 150, 200, 50, "Gate 1 — Service", "nexus / BFF / marvel"],
+          [260, 150, 220, 50, "Gate 2 — Staging journey", "FE + automation"],
+          [520, 150, 180, 50, "Allow / Block merge", "Bitbucket"],
+        ].map(([x, y, w, h, t, s], i) => (
           <g key={t}>
-            <rect x={x} y={y} width={w} height={h} rx="10" className="arch-box arch-box-accent" />
-            <text x={x + w / 2} y={y + 30} textAnchor="middle" className="arch-title">
+            <rect x={x} y={y} width={w} height={h} rx="10" className={`arch-box ${i === 2 ? "arch-box-accent" : ""}`} />
+            <text x={x + w / 2} y={y + 20} textAnchor="middle" className="arch-title">
               {t}
             </text>
-            {i < 4 && (
+            <text x={x + w / 2} y={y + 36} textAnchor="middle" className="arch-sub">
+              {s}
+            </text>
+            {i < 2 && (
               <line
                 x1={x + w + 2}
                 y1={y + h / 2}
@@ -122,79 +126,97 @@ function ArchDiagram({ type }) {
             )}
           </g>
         ))}
-        <text x={460} y={270} textAnchor="middle" className="arch-caption">
-          Human-in-the-loop for merges · fail closed on secrets · recon green only when status = completed
+        <text x={20} y={240} className="arch-caption">
+          Coordinates: workflow-nexus · lending BFF · marvel · Postpaid FE · automation
+        </text>
+        <text x={470} y={290} textAnchor="middle" className="arch-caption">
+          Slack HITL control plane · Gate 1 service · Gate 2 full staging journey
         </text>
       </svg>
     );
   }
 
-  return (
-    <svg className="arch-svg" viewBox="0 0 920 280" role="img" aria-label="ReconOps MCP API GET flow">
-      <defs>
-        <marker id="arrow3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-          <path d="M0,0 L6,3 L0,6 Z" fill="#3dd6c6" />
-        </marker>
-      </defs>
-      <text x={20} y={28} className="arch-caption">
-        ReconOps agent path — MCP tool discovery + API GET (sanitized)
-      </text>
-      {[
-        [20, 60, 130, 55, "Argo Trigger"],
-        [180, 60, 150, 55, "Orchestrator", "Strands / graph"],
-        [360, 60, 140, 55, "MCP Discover"],
-        [530, 60, 150, 55, "API GET", "LMS / status"],
-        [710, 60, 170, 55, "Schema Valid.", "then artifact"],
-      ].map(([x, y, w, h, t, s], i) => (
-        <g key={t}>
-          <rect
-            x={x}
-            y={y}
-            width={w}
-            height={h}
-            rx="10"
-            className={`arch-box ${i === 3 ? "arch-box-accent" : ""} ${i === 4 ? "arch-box-warn" : ""}`}
-          />
-          <text x={x + w / 2} y={y + (s ? 22 : 32)} textAnchor="middle" className="arch-title">
-            {t}
-          </text>
-          {s && (
-            <text x={x + w / 2} y={y + 40} textAnchor="middle" className="arch-sub">
+  if (type === "recon") {
+    return (
+      <svg className="arch-svg" viewBox="0 0 940 340" role="img" aria-label="ReconOps Argo plus LangGraph">
+        <defs>
+          <marker id="arrow3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L6,3 L0,6 Z" fill="#3dd6c6" />
+          </marker>
+        </defs>
+        <text x={20} y={24} className="arch-caption">
+          lending-central-ops · Argo = thin HTTP · LangGraph API = brains
+        </text>
+        {[
+          [20, 45, 150, 50, "Cron 06:00 IST", "or manual"],
+          [200, 45, 170, 50, "Argo thin HTTP", "POST /v1/runs"],
+          [400, 45, 160, 50, "Poll ~30s", "until completed"],
+          [590, 45, 180, 50, "LangGraph API", "recon brains"],
+        ].map(([x, y, w, h, t, s], i) => (
+          <g key={t}>
+            <rect x={x} y={y} width={w} height={h} rx="10" className={`arch-box ${i === 3 ? "arch-box-accent" : ""}`} />
+            <text x={x + w / 2} y={y + 20} textAnchor="middle" className="arch-title">
+              {t}
+            </text>
+            <text x={x + w / 2} y={y + 36} textAnchor="middle" className="arch-sub">
               {s}
             </text>
-          )}
-          {i < 4 && (
-            <line
-              x1={x + w + 2}
-              y1={y + h / 2}
-              x2={x + w + 26}
-              y2={y + h / 2}
-              className="arch-line"
-              markerEnd="url(#arrow3)"
+            {i < 3 && (
+              <line
+                x1={x + w + 2}
+                y1={y + h / 2}
+                x2={x + w + 26}
+                y2={y + h / 2}
+                className="arch-line"
+                markerEnd="url(#arrow3)"
+              />
+            )}
+          </g>
+        ))}
+        <text x={20} y={130} className="arch-caption">
+          LangGraph pipeline
+        </text>
+        {[
+          [20, 150, 100, 45, "Ingest"],
+          [150, 150, 70, 45, "S1"],
+          [240, 150, 70, 45, "S2"],
+          [330, 150, 70, 45, "S3"],
+          [430, 150, 120, 45, "Aggregate"],
+          [580, 150, 140, 45, "HITL analyze"],
+          [750, 150, 160, 45, "Execute"],
+        ].map(([x, y, w, h, t]) => (
+          <g key={t}>
+            <rect
+              x={x}
+              y={y}
+              width={w}
+              height={h}
+              rx="10"
+              className={`arch-box ${t === "HITL analyze" ? "arch-box-warn" : ""} ${t === "Execute" ? "arch-box-accent" : ""}`}
             />
-          )}
-        </g>
-      ))}
-      <rect x={20} y={160} width={160} height="50" rx="10" className="arch-box" />
-      <text x={100} y={190} textAnchor="middle" className="arch-title">
-        Poll → completed
-      </text>
-      <rect x={220} y={160} width={140} height="50" rx="10" className="arch-box arch-box-accent" />
-      <text x={290} y={190} textAnchor="middle" className="arch-title">
-        S3 / DWH
-      </text>
-      <rect x={400} y={160} width={140} height="50" rx="10" className="arch-box" />
-      <text x={470} y={190} textAnchor="middle" className="arch-title">
-        Prometheus
-      </text>
-      <line x1={85} y1={115} x2={85} y2={158} className="arch-line" markerEnd="url(#arrow3)" />
-      <line x1={180} y1={185} x2={216} y2={185} className="arch-line" markerEnd="url(#arrow3)" />
-      <line x1={360} y1={185} x2={396} y2={185} className="arch-line" markerEnd="url(#arrow3)" />
-      <text x={460} y={250} textAnchor="middle" className="arch-caption">
-        Allowlisted MCP tools perform API GETs · validate JSON · then artifact / complete Argo run
-      </text>
-    </svg>
-  );
+            <text x={x + w / 2} y={y + 28} textAnchor="middle" className="arch-title">
+              {t}
+            </text>
+          </g>
+        ))}
+        <text x={185} y={145} className="arch-caption">
+          parallel
+        </text>
+        <line x1={120} y1={172} x2={148} y2={172} className="arch-line" markerEnd="url(#arrow3)" />
+        <line x1={400} y1={172} x2={428} y2={172} className="arch-line" markerEnd="url(#arrow3)" />
+        <line x1={550} y1={172} x2={578} y2={172} className="arch-line" markerEnd="url(#arrow3)" />
+        <line x1={720} y1={172} x2={748} y2={172} className="arch-line" markerEnd="url(#arrow3)" />
+        <text x={20} y={230} className="arch-caption">
+          Execute: email · Jira · LMS · templates recon-ops-daily (+ approve HITL) · recon-ops-run (auto)
+        </text>
+        <text x={470} y={290} textAnchor="middle" className="arch-caption">
+          S1/S2/S3 in parallel · HITL before execution · Argo only wraps POST + poll
+        </text>
+      </svg>
+    );
+  }
+
+  return null;
 }
 
 const projects = [
@@ -258,109 +280,117 @@ const projects = [
     label: "Paytm · Agentic Quality",
     title: "PP QA Gatekeeper",
     summary:
-      "AI PR quality hub for Postpaid Lending: analyze → Slack human approve → staging checks → allow/block merge.",
+      "AI-native QA hub for Postpaid Lending: Cursor chat QA, Bitbucket PR Gatekeeper, and Jira → Cursor Cloud intake — FastAPI webhooks, Mongo run log, Slack HITL, then Gate 1 (service) + Gate 2 (full staging journey).",
     problem:
-      "Multi-repo Postpaid changes lacked a consistent AI + human gate before production.",
+      "Multi-repo Postpaid changes (nexus, BFF, marvel, FE, automation) lacked one orchestrated AI + human path before merge.",
     approach:
-      "Cursor analysis with Slack interactive approval and staging journey checks, owned with QA and engineering leads.",
+      "Core: FastAPI webhooks (:8765) → Mongo run log → orchestrators → Slack approve → Gate 1 service checks + Gate 2 full staging journey. Workspace coordination via repos.manifest.json across workflow-nexus, BFF, marvel, FE, and automation.",
     impact: [
-      "Unsafe merges blocked pre-prod",
+      "Unsafe merges blocked pre-prod across Bitbucket repos",
       "35% less manual PR review effort",
-      "Consistent signal across Bitbucket repos",
+      "One control plane for chat, PR, and Jira→Cloud Agent intake",
     ],
     tradeoffs: [
       {
-        q: "Why human-in-the-loop instead of fully automated merge?",
-        a: "Lending releases are high-blast-radius; AI proposes, humans approve — reduces false confidence while still cutting review toil.",
+        q: "Why Slack HITL before Gate 1 / Gate 2?",
+        a: "Lending blast radius is high — AI prepares the run; humans approve; then automated service + staging journey gates enforce merge allow/block.",
+      },
+      {
+        q: "Why two gates instead of one staging check?",
+        a: "Gate 1 catches service-level breaks early; Gate 2 runs the full staging journey so FE/automation regressions do not slip past a green service check.",
       },
     ],
     stackGroups: {
-      AI: ["Cursor"],
-      Collab: ["Slack"],
-      SCM: ["Bitbucket"],
-      Quality: ["Staging checks", "CI"],
+      Core: ["FastAPI", "MongoDB"],
+      AI: ["Cursor", "Cursor Cloud"],
+      Collab: ["Slack", "Jira", "Bitbucket"],
+      Fleet: ["workflow-nexus", "BFF", "marvel", "FE", "automation"],
     },
-    diagram: "gatekeeper-recon",
+    diagram: "gatekeeper",
     decisions: [
-      "Slack approval as the merge control plane",
-      "Staging journey must pass before allow",
-      "Fail closed when webhook secrets are missing",
+      "Webhook intake on :8765 with run persistence in Mongo",
+      "Slack approve is mandatory before gates",
+      "repos.manifest.json defines multi-repo workspace scope",
     ],
     sequence: [
-      "Bitbucket PR opened",
-      "Cursor AI analysis",
-      "Slack interactive human approval",
-      "Staging journey checks",
+      "Intake: Cursor chat / Bitbucket PR / Jira → Cursor Cloud",
+      "FastAPI webhook (:8765) writes Mongo run log",
+      "Orchestrator loads repos.manifest.json workspace",
+      "Slack interactive approve (HITL)",
+      "Gate 1 — service checks (nexus / BFF / marvel)",
+      "Gate 2 — full staging journey (FE + automation)",
       "Allow or block merge",
     ],
     constraints: [
-      "Human-in-the-loop required for merge allow",
-      "Fail closed if webhook / secrets unset",
-      "No silent bypass of staging gates",
+      "HITL required before automated gates",
+      "Fail closed on missing webhook secrets",
+      "Merge decision only after Gate 1 + Gate 2",
     ],
   },
   {
     id: "recon",
     num: "03",
-    label: "Paytm · ReconOps + Agentic APIs",
-    title: "ReconOps — Argo + Agentic API Orchestration (MCP)",
+    label: "Paytm · lending-central-ops",
+    title: "ReconOps — Argo (thin HTTP) + LangGraph API",
     summary:
-      "Lender–Paytm reconciliation on Argo Workflows, with an agentic orchestrator that discovers tools via MCP and performs API GETs (and follow-on writes) under JSON Schema validation — green only when the run completes.",
+      "LAN mismatch / lender–Paytm reconciliation in lending-central-ops: Argo only POSTs /v1/runs and polls ~30s; LangGraph API is the brains — ingest → S1/S2/S3 parallel → aggregate → HITL analyze → execute (email / Jira / LMS).",
     problem:
-      "Fire-and-forget recon looked green while jobs failed, and ad-hoc API calls in the agent path were hard to trust without schema and tool allowlists.",
+      "Fire-and-forget orchestration produced false-green recon; business actions needed a real agent pipeline with an optional human pause.",
     approach:
-      "Argo on EKS: async POST + poll-until-completed, AWS SM, S3/DWH, Helm, Prometheus. Inside the recon agent path, MCP discovers allowed tools (e.g. LMS/status APIs); the orchestrator plans GET → validate → artifact steps before side effects.",
+      "Argo templates recon-ops-daily (+ approve HITL) and recon-ops-run (auto), cron 06:00 IST. Argo stays a thin HTTP client; LangGraph runs ingest, parallel S1/S2/S3, aggregate, HITL pause, then execution via email, Jira, and LMS API calls.",
     impact: [
-      "Eliminated false-green recon runs",
-      "40% less manual report effort",
-      "Safe, allowlisted API GETs in the agent loop",
+      "Trustworthy completed-only recon outcomes",
+      "40% less manual report / chase effort",
+      "Parallel S1/S2/S3 + HITL before side effects",
     ],
     tradeoffs: [
       {
-        q: "Why poll-to-complete over fire-and-forget?",
-        a: "Ops trust needs a terminal state. The workflow fails unless status = completed.",
+        q: "Why keep Argo thin instead of putting graph logic in the workflow YAML?",
+        a: "Argo owns schedule, secrets, and poll-to-complete; LangGraph owns branching, parallel stages, and HITL — cleaner ownership and faster agent iteration.",
       },
       {
-        q: "Why MCP for recon API GETs?",
-        a: "Tools stay discoverable and allowlisted; every GET/response is schema-validated before the next step or S3 artifact write.",
+        q: "Why HITL pause before execution?",
+        a: "Analyze can draft email/Jira/LMS actions; humans approve on recon-ops-daily before irreversible execution. recon-ops-run stays auto when policy allows.",
       },
     ],
     stackGroups: {
-      Orchestration: ["Argo Workflows", "MCP", "AWS Strands"],
-      Cloud: ["EKS", "Helm", "AWS SM"],
-      Data: ["S3", "DWH"],
-      Observability: ["Prometheus"],
+      Orchestration: ["Argo Workflows", "LangGraph"],
+      Runtime: ["lending-central-ops", "HTTP /v1/runs"],
+      Actions: ["Email", "Jira", "LMS API"],
+      Cloud: ["EKS", "AWS SM", "S3/DWH"],
     },
-    diagram: "mcp",
+    diagram: "recon",
     decisions: [
-      "Green only when Argo status = completed",
-      "MCP allowlisted tools for LMS/API GETs",
-      "Validate JSON before artifact / next hop",
-      "ExternalSecrets — no unsafe bypass flags",
+      "Argo: POST /v1/runs + poll ~30s until completed",
+      "LangGraph: ingest → parallel S1/S2/S3 → aggregate → HITL → execute",
+      "Templates: recon-ops-daily (+ approve) and recon-ops-run (auto)",
+      "Cron 06:00 IST for daily recon",
     ],
     sequence: [
-      "Schedule / trigger ReconOps",
-      "Argo Workflow starts on EKS",
-      "Agent discovers MCP tools (API GET allowlist)",
-      "API GET → schema validate → optional artifact",
-      "Poll workflow until completed",
-      "S3 / DWH + Prometheus visibility",
+      "Cron 06:00 IST or manual / approve template",
+      "Argo POST /v1/runs (thin HTTP)",
+      "LangGraph ingest",
+      "S1 / S2 / S3 in parallel",
+      "Aggregate results",
+      "HITL pause (analyze) on daily+approve path",
+      "Execute: email / Jira / LMS",
+      "Argo poll until status = completed",
     ],
     constraints: [
-      "No false-green: must reach completed",
-      "API tools allowlisted via MCP",
-      "Secrets via AWS SM / ExternalSecrets",
+      "Green only when run status = completed",
+      "Parallel fan-out limited to S1/S2/S3 stage contracts",
+      "HITL required on recon-ops-daily + approve template",
     ],
-    trace: `$ recon-ops run --partition 2026-07-27
-> argo.submit recon-ops-run
-> mcp.discover tools=[lms.getStatus, s3.putArtifact]
-> tool lms.getStatus GET /status?loanId=LN-9f2a
-< {"status":"ACTIVE","stage":"MANDATE"}
-> schema.validate OK
-> tool s3.putArtifact {"key":"recon/LN-9f2a.json"}
-> argo.poll → status=completed
-✓ recon green (completed)`,
+    trace: `$ argo submit recon-ops-daily
+> POST /v1/runs  → run_id=r_18
+> LangGraph: ingest OK
+> S1∥S2∥S3 aggregate OK
+> HITL pause — analyze draft (email/Jira/LMS)
+> approve → execute LMS GET/PATCH + Jira + email
+> poll 30s … status=completed
+✓ recon green`,
   },
+  {
   {
     id: "indiamart-buyleads",
     num: "04",
