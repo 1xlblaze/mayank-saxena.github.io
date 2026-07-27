@@ -326,9 +326,10 @@ a:hover {
 }
 
 .impact-item {
-  padding: 1.4rem 1rem;
+  padding: 1.6rem 1.1rem;
   text-align: center;
   border-right: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(61, 214, 198, 0.08), transparent 70%);
 }
 
 .impact-item:last-child {
@@ -338,14 +339,18 @@ a:hover {
 .impact-item strong {
   display: block;
   font-family: var(--font-display);
-  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-size: clamp(1.65rem, 3.2vw, 2.15rem);
   color: var(--accent);
   letter-spacing: -0.03em;
+  text-shadow: 0 0 24px rgba(61, 214, 198, 0.25);
 }
 
 .impact-item span {
   color: var(--muted);
   font-size: 0.84rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 /* Sections */
@@ -592,6 +597,219 @@ a:hover {
   gap: 1rem;
 }
 
+.tradeoffs {
+  margin: 1.25rem 0 1.5rem;
+  padding: 1rem 1.1rem;
+  border-left: 3px solid var(--amber);
+  background: rgba(232, 194, 122, 0.06);
+  border-radius: 0 12px 12px 0;
+}
+
+.tradeoffs h4,
+.trace-label,
+.modal-decisions h4 {
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 0.65rem;
+}
+
+.tradeoff {
+  margin-bottom: 0.75rem;
+}
+
+.tradeoff:last-child {
+  margin-bottom: 0;
+}
+
+.tradeoff strong {
+  display: block;
+  color: var(--ink);
+  font-size: 0.95rem;
+  margin-bottom: 0.25rem;
+}
+
+.tradeoff p {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.stack-groups {
+  display: grid;
+  gap: 0.65rem;
+  margin-bottom: 1.25rem;
+}
+
+.stack-group {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 0.75rem;
+  align-items: start;
+}
+
+.stack-role {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding-top: 0.35rem;
+}
+
+.project-actions {
+  margin: 0.5rem 0 1rem;
+}
+
+.project-actions .btn {
+  cursor: pointer;
+  font: inherit;
+  background: transparent;
+}
+
+.trace-block {
+  margin-top: 0.5rem;
+}
+
+.trace {
+  margin: 0;
+  padding: 1rem 1.1rem;
+  border-radius: 12px;
+  background: #05080c;
+  border: 1px solid var(--line);
+  color: #9fe9df;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+  line-height: 1.55;
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
+
+/* Excalidraw-ish diagram */
+.arch-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.35));
+}
+
+.arch-box {
+  fill: #121a24;
+  stroke: #3dd6c6;
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+  stroke-dasharray: 1.2 0.4;
+}
+
+.arch-box-accent {
+  fill: rgba(61, 214, 198, 0.12);
+}
+
+.arch-box-warn {
+  fill: rgba(232, 194, 122, 0.12);
+  stroke: #e8c27a;
+}
+
+.arch-title {
+  fill: #f2f5f8;
+  font-size: 13px;
+  font-family: Syne, sans-serif;
+  font-weight: 700;
+}
+
+.arch-sub {
+  fill: #93a4b8;
+  font-size: 11px;
+  font-family: "Instrument Sans", sans-serif;
+}
+
+.arch-line {
+  stroke: #3dd6c6;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-dasharray: 4 3;
+}
+
+.arch-caption {
+  fill: #93a4b8;
+  font-size: 12px;
+  font-family: "Instrument Sans", sans-serif;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(6px);
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+  animation: fade-in 0.2s ease;
+}
+
+.modal {
+  width: min(960px, 100%);
+  max-height: min(90vh, 900px);
+  overflow: auto;
+  background: #0e151d;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 1.25rem 1.35rem 1.5rem;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+}
+
+.modal-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: start;
+  margin-bottom: 1rem;
+}
+
+.modal-head h3 {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
+}
+
+.modal-close {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 1.8rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.modal-diagram {
+  padding: 0.75rem;
+  border-radius: 14px;
+  border: 1px dashed rgba(61, 214, 198, 0.35);
+  background:
+    radial-gradient(circle at 20% 20%, rgba(61, 214, 198, 0.06), transparent 40%),
+    #0a1017;
+  margin-bottom: 1rem;
+  overflow-x: auto;
+}
+
+.modal-decisions ul {
+  padding-left: 1.1rem;
+  color: var(--muted);
+}
+
+.modal-decisions li {
+  margin-bottom: 0.35rem;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 @keyframes rise {
   to {
     opacity: 1;
@@ -637,7 +855,8 @@ a:hover {
 
   .project-grid,
   .project-detail,
-  .skills {
+  .skills,
+  .stack-group {
     grid-template-columns: 1fr;
   }
 
