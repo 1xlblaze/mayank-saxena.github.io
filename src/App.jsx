@@ -577,7 +577,7 @@ const skillGroups = [
   },
   {
     title: "Distributed Systems",
-    items: ["Event-Driven Architecture", "Kafka", "MSK", "Redis", "SSE", "Pub/Sub", "gRPC"],
+    items: ["Event-Driven Architecture", "Kafka", "MSK", "Redis", "MongoDB", "SSE", "Pub/Sub", "gRPC"],
   },
   {
     title: "Cloud & Platform",
