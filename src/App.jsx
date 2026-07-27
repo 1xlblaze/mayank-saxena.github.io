@@ -54,7 +54,7 @@ function ArchDiagram({ type }) {
         </text>
         <line x1={830} y1={155} x2={830} y2={183} className="arch-line" markerEnd="url(#arrow)" />
         <text x={460} y={50} textAnchor="middle" className="arch-caption">
-          Publish only if Redis leadassist:&#123;customerId&#125; exists · PII stripped before Kafka · Akamai SSE heartbeats
+          Session-gated publish · PII stripped before the bus · SSE fan-out to agents
         </text>
       </svg>
     );
@@ -62,21 +62,21 @@ function ArchDiagram({ type }) {
 
   if (type === "gatekeeper") {
     return (
-      <svg className="arch-svg" viewBox="0 0 940 320" role="img" aria-label="PP QA Gatekeeper architecture">
+      <svg className="arch-svg" viewBox="0 0 940 300" role="img" aria-label="QA Gatekeeper pattern">
         <defs>
           <marker id="arrow2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
             <path d="M0,0 L6,3 L0,6 Z" fill="#3dd6c6" />
           </marker>
         </defs>
         <text x={20} y={24} className="arch-caption">
-          Intake: Cursor chat QA · Bitbucket PR Gatekeeper · Jira → Cursor Cloud
+          Public pattern — intake channels → webhook API → run log → HITL → dual quality gates
         </text>
         {[
-          [20, 45, 150, 48, "Webhooks", "Jira / BB / Slack"],
-          [200, 45, 160, 48, "FastAPI :8765", "pp-qa-gatekeeper"],
-          [390, 45, 140, 48, "Mongo", "run log"],
-          [560, 45, 150, 48, "Orchestrators", "workspace jobs"],
-          [740, 45, 160, 48, "Slack Approve", "HITL"],
+          [20, 45, 150, 48, "Intake", "Chat / PR / Ticket"],
+          [200, 45, 150, 48, "Webhook API", "run intake"],
+          [380, 45, 140, 48, "Run store", "audit log"],
+          [550, 45, 150, 48, "Orchestrator", "multi-repo jobs"],
+          [730, 45, 160, 48, "Human approve", "Slack HITL"],
         ].map(([x, y, w, h, t, s], i) => (
           <g key={t}>
             <rect x={x} y={y} width={w} height={h} rx="10" className={`arch-box ${i === 4 ? "arch-box-warn" : ""}`} />
@@ -98,13 +98,10 @@ function ArchDiagram({ type }) {
             )}
           </g>
         ))}
-        <text x={20} y={130} className="arch-caption">
-          Dual gates after approval · repos via workspace/repos.manifest.json
-        </text>
         {[
-          [20, 150, 200, 50, "Gate 1 — Service", "nexus / BFF / marvel"],
-          [260, 150, 220, 50, "Gate 2 — Staging journey", "FE + automation"],
-          [520, 150, 180, 50, "Allow / Block merge", "Bitbucket"],
+          [20, 150, 220, 50, "Gate A — Services", "backend health checks"],
+          [280, 150, 240, 50, "Gate B — Staging journey", "end-to-end UI path"],
+          [560, 150, 200, 50, "Merge decision", "allow / block"],
         ].map(([x, y, w, h, t, s], i) => (
           <g key={t}>
             <rect x={x} y={y} width={w} height={h} rx="10" className={`arch-box ${i === 2 ? "arch-box-accent" : ""}`} />
@@ -126,11 +123,8 @@ function ArchDiagram({ type }) {
             )}
           </g>
         ))}
-        <text x={20} y={240} className="arch-caption">
-          Coordinates: workflow-nexus · lending BFF · marvel · Postpaid FE · automation
-        </text>
-        <text x={470} y={290} textAnchor="middle" className="arch-caption">
-          Slack HITL control plane · Gate 1 service · Gate 2 full staging journey
+        <text x={470} y={250} textAnchor="middle" className="arch-caption">
+          Pattern only — ports, secrets, repo manifests, and internal service names withheld
         </text>
       </svg>
     );
@@ -138,23 +132,23 @@ function ArchDiagram({ type }) {
 
   if (type === "recon") {
     return (
-      <svg className="arch-svg" viewBox="0 0 940 340" role="img" aria-label="ReconOps Argo plus LangGraph">
+      <svg className="arch-svg" viewBox="0 0 940 320" role="img" aria-label="ReconOps pattern">
         <defs>
           <marker id="arrow3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
             <path d="M0,0 L6,3 L0,6 Z" fill="#3dd6c6" />
           </marker>
         </defs>
         <text x={20} y={24} className="arch-caption">
-          lending-central-ops · Argo = thin HTTP · LangGraph API = brains
+          Public pattern — scheduler → thin workflow runner → agent API → parallel stages → HITL → actions
         </text>
         {[
-          [20, 45, 150, 50, "Cron 06:00 IST", "or manual"],
-          [200, 45, 170, 50, "Argo thin HTTP", "POST /v1/runs"],
-          [400, 45, 160, 50, "Poll ~30s", "until completed"],
-          [590, 45, 180, 50, "LangGraph API", "recon brains"],
+          [20, 45, 140, 50, "Schedule", "daily / on-demand"],
+          [190, 45, 160, 50, "Thin runner", "start + poll"],
+          [380, 45, 160, 50, "Agent API", "graph brains"],
+          [570, 45, 160, 50, "Complete?", "terminal status"],
         ].map(([x, y, w, h, t, s], i) => (
           <g key={t}>
-            <rect x={x} y={y} width={w} height={h} rx="10" className={`arch-box ${i === 3 ? "arch-box-accent" : ""}`} />
+            <rect x={x} y={y} width={w} height={h} rx="10" className={`arch-box ${i === 2 ? "arch-box-accent" : ""}`} />
             <text x={x + w / 2} y={y + 20} textAnchor="middle" className="arch-title">
               {t}
             </text>
@@ -174,16 +168,16 @@ function ArchDiagram({ type }) {
           </g>
         ))}
         <text x={20} y={130} className="arch-caption">
-          LangGraph pipeline
+          Agent pipeline (conceptual)
         </text>
         {[
           [20, 150, 100, 45, "Ingest"],
-          [150, 150, 70, 45, "S1"],
-          [240, 150, 70, 45, "S2"],
-          [330, 150, 70, 45, "S3"],
-          [430, 150, 120, 45, "Aggregate"],
-          [580, 150, 140, 45, "HITL analyze"],
-          [750, 150, 160, 45, "Execute"],
+          [150, 150, 90, 45, "Stage A"],
+          [260, 150, 90, 45, "Stage B"],
+          [370, 150, 90, 45, "Stage C"],
+          [490, 150, 120, 45, "Aggregate"],
+          [640, 150, 120, 45, "HITL"],
+          [790, 150, 120, 45, "Actions"],
         ].map(([x, y, w, h, t]) => (
           <g key={t}>
             <rect
@@ -192,25 +186,21 @@ function ArchDiagram({ type }) {
               width={w}
               height={h}
               rx="10"
-              className={`arch-box ${t === "HITL analyze" ? "arch-box-warn" : ""} ${t === "Execute" ? "arch-box-accent" : ""}`}
+              className={`arch-box ${t === "HITL" ? "arch-box-warn" : ""} ${t === "Actions" ? "arch-box-accent" : ""}`}
             />
             <text x={x + w / 2} y={y + 28} textAnchor="middle" className="arch-title">
               {t}
             </text>
           </g>
         ))}
-        <text x={185} y={145} className="arch-caption">
+        <text x={250} y={145} className="arch-caption">
           parallel
         </text>
-        <line x1={120} y1={172} x2={148} y2={172} className="arch-line" markerEnd="url(#arrow3)" />
-        <line x1={400} y1={172} x2={428} y2={172} className="arch-line" markerEnd="url(#arrow3)" />
-        <line x1={550} y1={172} x2={578} y2={172} className="arch-line" markerEnd="url(#arrow3)" />
-        <line x1={720} y1={172} x2={748} y2={172} className="arch-line" markerEnd="url(#arrow3)" />
-        <text x={20} y={230} className="arch-caption">
-          Execute: email · Jira · LMS · templates recon-ops-daily (+ approve HITL) · recon-ops-run (auto)
+        <text x={470} y={240} textAnchor="middle" className="arch-caption">
+          Actions may include notify / ticket / domain API calls — exact routes and templates not published
         </text>
-        <text x={470} y={290} textAnchor="middle" className="arch-caption">
-          S1/S2/S3 in parallel · HITL before execution · Argo only wraps POST + poll
+        <text x={470} y={275} textAnchor="middle" className="arch-caption">
+          Runner stays thin; agent owns branching, parallelism, and human pause
         </text>
       </svg>
     );
@@ -230,7 +220,7 @@ const projects = [
     problem:
       "Agents needed live visibility across 120+ loan stages without leaking PAN, Aadhaar, phone, or DOB into Kafka/analytics.",
     approach:
-      "NestJS BFF emits session-gated Kafka events (Redis key must exist). PII is masked before publish. Go SSE fans out to agent dashboards with Akamai-aware heartbeats.",
+      "NestJS BFF emits session-gated Kafka events only when an assist session is active. PII is masked before publish. Go SSE fans out to agent dashboards.",
     impact: [
       "22% fewer lending drop-offs",
       "60% lower agent display latency",
@@ -280,115 +270,106 @@ const projects = [
     label: "Paytm · Agentic Quality",
     title: "PP QA Gatekeeper",
     summary:
-      "AI-native QA hub for Postpaid Lending: Cursor chat QA, Bitbucket PR Gatekeeper, and Jira → Cursor Cloud intake — FastAPI webhooks, Mongo run log, Slack HITL, then Gate 1 (service) + Gate 2 (full staging journey).",
+      "AI-assisted quality hub for Postpaid Lending: chat/PR/ticket intake, human approval in Slack, then dual automated gates (service checks + full staging journey) before merge allow/block.",
     problem:
-      "Multi-repo Postpaid changes (nexus, BFF, marvel, FE, automation) lacked one orchestrated AI + human path before merge.",
+      "Changes spanning multiple lending repos needed one AI + human path before production merges.",
     approach:
-      "Core: FastAPI webhooks (:8765) → Mongo run log → orchestrators → Slack approve → Gate 1 service checks + Gate 2 full staging journey. Workspace coordination via repos.manifest.json across workflow-nexus, BFF, marvel, FE, and automation.",
+      "Webhook API persists runs, orchestrates multi-repo workspace jobs, requires Slack HITL, then runs Gate A (services) and Gate B (staging journey). Exact ports, manifests, and internal repo wiring stay private.",
     impact: [
-      "Unsafe merges blocked pre-prod across Bitbucket repos",
+      "Unsafe merges blocked pre-prod",
       "35% less manual PR review effort",
-      "One control plane for chat, PR, and Jira→Cloud Agent intake",
+      "One control plane for chat, PR, and ticket→agent intake",
     ],
     tradeoffs: [
       {
-        q: "Why Slack HITL before Gate 1 / Gate 2?",
-        a: "Lending blast radius is high — AI prepares the run; humans approve; then automated service + staging journey gates enforce merge allow/block.",
+        q: "Why Slack HITL before automated gates?",
+        a: "Lending blast radius is high — AI prepares the run; humans approve; gates enforce allow/block.",
       },
       {
-        q: "Why two gates instead of one staging check?",
-        a: "Gate 1 catches service-level breaks early; Gate 2 runs the full staging journey so FE/automation regressions do not slip past a green service check.",
+        q: "Why two gates instead of one?",
+        a: "Service checks catch backend breaks early; staging journeys catch FE/automation regressions a unit-green miss.",
       },
     ],
     stackGroups: {
       Core: ["FastAPI", "MongoDB"],
-      AI: ["Cursor", "Cursor Cloud"],
+      AI: ["Cursor Cloud Agents"],
       Collab: ["Slack", "Jira", "Bitbucket"],
-      Fleet: ["workflow-nexus", "BFF", "marvel", "FE", "automation"],
+      Quality: ["Service gates", "Staging journeys"],
     },
     diagram: "gatekeeper",
     decisions: [
-      "Webhook intake on :8765 with run persistence in Mongo",
-      "Slack approve is mandatory before gates",
-      "repos.manifest.json defines multi-repo workspace scope",
+      "Human approve is mandatory before gates",
+      "Dual gate: services then end-to-end staging",
+      "Public site shows pattern only — implementation details withheld",
     ],
     sequence: [
-      "Intake: Cursor chat / Bitbucket PR / Jira → Cursor Cloud",
-      "FastAPI webhook (:8765) writes Mongo run log",
-      "Orchestrator loads repos.manifest.json workspace",
-      "Slack interactive approve (HITL)",
-      "Gate 1 — service checks (nexus / BFF / marvel)",
-      "Gate 2 — full staging journey (FE + automation)",
+      "Intake from chat / PR / ticket channels",
+      "Webhook API records the run",
+      "Orchestrator schedules multi-repo jobs",
+      "Human approve (HITL)",
+      "Gate A — service checks",
+      "Gate B — staging journey",
       "Allow or block merge",
     ],
     constraints: [
       "HITL required before automated gates",
-      "Fail closed on missing webhook secrets",
-      "Merge decision only after Gate 1 + Gate 2",
+      "Fail closed when secrets missing",
+      "Merge only after both gates",
     ],
   },
   {
     id: "recon",
     num: "03",
-    label: "Paytm · lending-central-ops",
-    title: "ReconOps — Argo (thin HTTP) + LangGraph API",
+    label: "Paytm · Ops / Agentic",
+    title: "ReconOps — Thin runner + agent graph",
     summary:
-      "LAN mismatch / lender–Paytm reconciliation in lending-central-ops: Argo only POSTs /v1/runs and polls ~30s; LangGraph API is the brains — ingest → S1/S2/S3 parallel → aggregate → HITL analyze → execute (email / Jira / LMS).",
+      "Lender–Paytm reconciliation: a thin workflow runner starts/polls the job; an agent graph does ingest → parallel stages → aggregate → optional HITL → actions (notify / ticket / domain APIs).",
     problem:
-      "Fire-and-forget orchestration produced false-green recon; business actions needed a real agent pipeline with an optional human pause.",
+      "Fire-and-forget jobs looked green while work failed; ops needed terminal status plus a real agent pipeline with a human pause before side effects.",
     approach:
-      "Argo templates recon-ops-daily (+ approve HITL) and recon-ops-run (auto), cron 06:00 IST. Argo stays a thin HTTP client; LangGraph runs ingest, parallel S1/S2/S3, aggregate, HITL pause, then execution via email, Jira, and LMS API calls.",
+      "Runner stays thin (start + poll to completed). Agent API owns branching, parallel stage work, HITL analyze, and execution. Daily HITL and auto templates exist — names, cron, and API paths not published here.",
     impact: [
-      "Trustworthy completed-only recon outcomes",
-      "40% less manual report / chase effort",
-      "Parallel S1/S2/S3 + HITL before side effects",
+      "Trustworthy completed-only outcomes",
+      "40% less manual chase effort",
+      "Parallel stages + HITL before side effects",
     ],
     tradeoffs: [
       {
-        q: "Why keep Argo thin instead of putting graph logic in the workflow YAML?",
-        a: "Argo owns schedule, secrets, and poll-to-complete; LangGraph owns branching, parallel stages, and HITL — cleaner ownership and faster agent iteration.",
+        q: "Why keep the runner thin?",
+        a: "Scheduler/secrets/poll stay in the runner; agent iteration (graph, HITL, actions) stays faster without YAML sprawl.",
       },
       {
-        q: "Why HITL pause before execution?",
-        a: "Analyze can draft email/Jira/LMS actions; humans approve on recon-ops-daily before irreversible execution. recon-ops-run stays auto when policy allows.",
+        q: "Why HITL before actions?",
+        a: "Analyze can draft notifications/tickets/API updates; humans approve before irreversible execution on the daily path.",
       },
     ],
     stackGroups: {
       Orchestration: ["Argo Workflows", "LangGraph"],
-      Runtime: ["lending-central-ops", "HTTP /v1/runs"],
-      Actions: ["Email", "Jira", "LMS API"],
-      Cloud: ["EKS", "AWS SM", "S3/DWH"],
+      Pattern: ["Thin runner", "Agent API"],
+      Actions: ["Notify", "Tickets", "Domain APIs"],
+      Cloud: ["Kubernetes", "Secrets", "Object storage"],
     },
     diagram: "recon",
     decisions: [
-      "Argo: POST /v1/runs + poll ~30s until completed",
-      "LangGraph: ingest → parallel S1/S2/S3 → aggregate → HITL → execute",
-      "Templates: recon-ops-daily (+ approve) and recon-ops-run (auto)",
-      "Cron 06:00 IST for daily recon",
+      "Runner: start job + poll until completed",
+      "Agent: ingest → parallel stages → aggregate → HITL → actions",
+      "Public diagrams omit routes, templates, and schedules",
     ],
     sequence: [
-      "Cron 06:00 IST or manual / approve template",
-      "Argo POST /v1/runs (thin HTTP)",
-      "LangGraph ingest",
-      "S1 / S2 / S3 in parallel",
-      "Aggregate results",
-      "HITL pause (analyze) on daily+approve path",
-      "Execute: email / Jira / LMS",
-      "Argo poll until status = completed",
+      "Schedule or on-demand trigger",
+      "Thin runner starts agent job",
+      "Ingest",
+      "Parallel stages A/B/C",
+      "Aggregate",
+      "Optional HITL analyze",
+      "Actions (notify / ticket / APIs)",
+      "Runner confirms completed",
     ],
     constraints: [
-      "Green only when run status = completed",
-      "Parallel fan-out limited to S1/S2/S3 stage contracts",
-      "HITL required on recon-ops-daily + approve template",
+      "Green only on terminal completed status",
+      "HITL on the human-approved daily path",
+      "Exact API contracts withheld publicly",
     ],
-    trace: `$ argo submit recon-ops-daily
-> POST /v1/runs  → run_id=r_18
-> LangGraph: ingest OK
-> S1∥S2∥S3 aggregate OK
-> HITL pause — analyze draft (email/Jira/LMS)
-> approve → execute LMS GET/PATCH + Jira + email
-> poll 30s … status=completed
-✓ recon green`,
   },
   {
     id: "indiamart-buyleads",
@@ -729,7 +710,7 @@ export default function App() {
                       <div className="design-panel-head">
                         <div>
                           <h4>System design</h4>
-                          <p>Sanitized production pattern — no proprietary service names or secrets.</p>
+                          <p>Public architecture pattern — implementation details, ports, and internal names withheld.</p>
                         </div>
                         <button
                           type="button"
