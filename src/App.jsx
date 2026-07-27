@@ -391,7 +391,6 @@ const projects = [
 ✓ recon green`,
   },
   {
-  {
     id: "indiamart-buyleads",
     num: "04",
     label: "IndiaMART · Platform",
