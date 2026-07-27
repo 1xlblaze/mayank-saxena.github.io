@@ -130,22 +130,31 @@ function ArchDiagram({ type }) {
   }
 
   return (
-    <svg className="arch-svg" viewBox="0 0 920 260" role="img" aria-label="MCP Hub architecture">
+    <svg className="arch-svg" viewBox="0 0 920 280" role="img" aria-label="ReconOps MCP API GET flow">
       <defs>
         <marker id="arrow3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
           <path d="M0,0 L6,3 L0,6 Z" fill="#3dd6c6" />
         </marker>
       </defs>
+      <text x={20} y={28} className="arch-caption">
+        ReconOps agent path — MCP tool discovery + API GET (sanitized)
+      </text>
       {[
-        [40, 90, 140, 55, "User Request"],
-        [220, 90, 170, 55, "Orchestrator", "Strands / LangGraph"],
-        [430, 90, 150, 55, "MCP Discovery"],
-        [620, 40, 160, 55, "JSON Schema"],
-        [620, 140, 160, 55, "Tool Execute"],
-        [820, 90, 70, 55, "API"],
+        [20, 60, 130, 55, "Argo Trigger"],
+        [180, 60, 150, 55, "Orchestrator", "Strands / graph"],
+        [360, 60, 140, 55, "MCP Discover"],
+        [530, 60, 150, 55, "API GET", "LMS / status"],
+        [710, 60, 170, 55, "Schema Valid.", "then artifact"],
       ].map(([x, y, w, h, t, s], i) => (
         <g key={t}>
-          <rect x={x} y={y} width={w} height={h} rx="10" className={`arch-box ${i === 3 ? "arch-box-warn" : ""}`} />
+          <rect
+            x={x}
+            y={y}
+            width={w}
+            height={h}
+            rx="10"
+            className={`arch-box ${i === 3 ? "arch-box-accent" : ""} ${i === 4 ? "arch-box-warn" : ""}`}
+          />
           <text x={x + w / 2} y={y + (s ? 22 : 32)} textAnchor="middle" className="arch-title">
             {t}
           </text>
@@ -154,16 +163,35 @@ function ArchDiagram({ type }) {
               {s}
             </text>
           )}
+          {i < 4 && (
+            <line
+              x1={x + w + 2}
+              y1={y + h / 2}
+              x2={x + w + 26}
+              y2={y + h / 2}
+              className="arch-line"
+              markerEnd="url(#arrow3)"
+            />
+          )}
         </g>
       ))}
-      <line x1={180} y1={117} x2={216} y2={117} className="arch-line" markerEnd="url(#arrow3)" />
-      <line x1={390} y1={117} x2={426} y2={117} className="arch-line" markerEnd="url(#arrow3)" />
-      <line x1={580} y1={100} x2={616} y2={70} className="arch-line" markerEnd="url(#arrow3)" />
-      <line x1={580} y1={130} x2={616} y2={160} className="arch-line" markerEnd="url(#arrow3)" />
-      <line x1={780} y1={67} x2={816} y2={100} className="arch-line" markerEnd="url(#arrow3)" />
-      <line x1={780} y1={167} x2={816} y2={130} className="arch-line" markerEnd="url(#arrow3)" />
-      <text x={460} y={230} textAnchor="middle" className="arch-caption">
-        Tools discovered via MCP · outputs validated before side effects · structured JSON for backends
+      <rect x={20} y={160} width={160} height="50" rx="10" className="arch-box" />
+      <text x={100} y={190} textAnchor="middle" className="arch-title">
+        Poll → completed
+      </text>
+      <rect x={220} y={160} width={140} height="50" rx="10" className="arch-box arch-box-accent" />
+      <text x={290} y={190} textAnchor="middle" className="arch-title">
+        S3 / DWH
+      </text>
+      <rect x={400} y={160} width={140} height="50" rx="10" className="arch-box" />
+      <text x={470} y={190} textAnchor="middle" className="arch-title">
+        Prometheus
+      </text>
+      <line x1={85} y1={115} x2={85} y2={158} className="arch-line" markerEnd="url(#arrow3)" />
+      <line x1={180} y1={185} x2={216} y2={185} className="arch-line" markerEnd="url(#arrow3)" />
+      <line x1={360} y1={185} x2={396} y2={185} className="arch-line" markerEnd="url(#arrow3)" />
+      <text x={460} y={250} textAnchor="middle" className="arch-caption">
+        Allowlisted MCP tools perform API GETs · validate JSON · then artifact / complete Argo run
       </text>
     </svg>
   );
@@ -274,109 +302,126 @@ const projects = [
   {
     id: "recon",
     num: "03",
-    label: "Paytm · Platform Ops",
-    title: "ReconOps on Argo Workflows",
+    label: "Paytm · ReconOps + Agentic APIs",
+    title: "ReconOps — Argo + Agentic API Orchestration (MCP)",
     summary:
-      "Lender–Paytm reconciliation that only reports green when the async run reaches completed.",
+      "Lender–Paytm reconciliation on Argo Workflows, with an agentic orchestrator that discovers tools via MCP and performs API GETs (and follow-on writes) under JSON Schema validation — green only when the run completes.",
     problem:
-      "Fire-and-forget orchestration created false-green recon and manual report chasing.",
+      "Fire-and-forget recon looked green while jobs failed, and ad-hoc API calls in the agent path were hard to trust without schema and tool allowlists.",
     approach:
-      "Argo on EKS with poll-until-completed, AWS Secrets Manager, S3/DWH artifacts, Helm, Prometheus scrape.",
+      "Argo on EKS: async POST + poll-until-completed, AWS SM, S3/DWH, Helm, Prometheus. Inside the recon agent path, MCP discovers allowed tools (e.g. LMS/status APIs); the orchestrator plans GET → validate → artifact steps before side effects.",
     impact: [
       "Eliminated false-green recon runs",
       "40% less manual report effort",
-      "Scheduled secret-safe stage/prod path",
+      "Safe, allowlisted API GETs in the agent loop",
     ],
     tradeoffs: [
       {
         q: "Why poll-to-complete over fire-and-forget?",
-        a: "Ops trust requires terminal state. Async POST + poll fails the workflow unless status = completed.",
+        a: "Ops trust needs a terminal state. The workflow fails unless status = completed.",
+      },
+      {
+        q: "Why MCP for recon API GETs?",
+        a: "Tools stay discoverable and allowlisted; every GET/response is schema-validated before the next step or S3 artifact write.",
       },
     ],
     stackGroups: {
-      Orchestration: ["Argo Workflows"],
+      Orchestration: ["Argo Workflows", "MCP", "AWS Strands"],
       Cloud: ["EKS", "Helm", "AWS SM"],
       Data: ["S3", "DWH"],
       Observability: ["Prometheus"],
     },
-    diagram: "gatekeeper-recon",
-    decisions: [
-      "ExternalSecrets for recon credentials",
-      "No unsafe bypass flags in prod templates",
-      "Prometheus annotations on central-ops",
-    ],
-    sequence: [
-      "Schedule / manual trigger",
-      "Argo Workflow starts on EKS",
-      "Async POST then poll until completed",
-      "Artifacts to S3 / DWH",
-      "Prometheus scrape + ops visibility",
-    ],
-    constraints: [
-      "Green only when status = completed (no false-green)",
-      "Secrets via AWS SM / ExternalSecrets",
-      "Stage vs prod URL targeting explicit in params",
-    ],
-  },
-  {
-    id: "mcp",
-    num: "04",
-    label: "Personal · 2025–2026",
-    title: "Agentic Workflow Orchestrator & MCP Hub",
-    summary:
-      "Cloud-agents framework for enterprise backends: MCP tool discovery, multi-step execution, schema-validated JSON.",
-    problem:
-      "Ad-hoc LLM tool calls are unsafe — missing schemas, brittle JSON, uncontrolled side effects.",
-    approach:
-      "Orchestrator on AWS Strands / LangGraph patterns with MCP server discovery and JSON Schema validation before tool execution.",
-    impact: [
-      "Reusable safe tool-calling pattern",
-      "Clear plan → tools → structured response split",
-      "Ready for Cursor / cloud-agent backends",
-    ],
-    tradeoffs: [
-      {
-        q: "Why MCP + schema validation?",
-        a: "Discovery stays dynamic; execution stays constrained. Invalid payloads never reach backend tools.",
-      },
-    ],
-    stackGroups: {
-      AI: ["MCP", "AWS Strands", "LangGraph"],
-      Validation: ["JSON Schema"],
-      Runtime: ["Cloud Agents"],
-    },
     diagram: "mcp",
     decisions: [
-      "Validate before side effects",
-      "Tool allowlists over open function calling",
-      "Structured outputs for downstream APIs",
+      "Green only when Argo status = completed",
+      "MCP allowlisted tools for LMS/API GETs",
+      "Validate JSON before artifact / next hop",
+      "ExternalSecrets — no unsafe bypass flags",
     ],
     sequence: [
-      "User / system request",
-      "Orchestrator (Strands / LangGraph)",
-      "MCP server tool discovery",
-      "JSON Schema validation",
-      "Backend tool execution",
-      "Structured response to caller",
+      "Schedule / trigger ReconOps",
+      "Argo Workflow starts on EKS",
+      "Agent discovers MCP tools (API GET allowlist)",
+      "API GET → schema validate → optional artifact",
+      "Poll workflow until completed",
+      "S3 / DWH + Prometheus visibility",
     ],
     constraints: [
-      "Invalid JSON never reaches tools",
-      "Allowlisted tools only",
-      "Deterministic structured outputs for APIs",
+      "No false-green: must reach completed",
+      "API tools allowlisted via MCP",
+      "Secrets via AWS SM / ExternalSecrets",
     ],
-    trace: `$ agent.run --goal "fetch_lender_status" --schema strict
+    trace: `$ recon-ops run --partition 2026-07-27
+> argo.submit recon-ops-run
 > mcp.discover tools=[lms.getStatus, s3.putArtifact]
-> plan: getStatus → validate → putArtifact
-> tool lms.getStatus {"loanId":"LN-9f2a"} 
+> tool lms.getStatus GET /status?loanId=LN-9f2a
 < {"status":"ACTIVE","stage":"MANDATE"}
 > schema.validate OK
 > tool s3.putArtifact {"key":"recon/LN-9f2a.json"}
-< {"ok":true,"etag":"ab12..."}
-✓ workflow completed`,
+> argo.poll → status=completed
+✓ recon green (completed)`,
+  },
+  {
+    id: "indiamart-buyleads",
+    num: "04",
+    label: "IndiaMART · Platform",
+    title: "Buyleads Platform — Go Migration and Latency",
+    summary:
+      "Owned high-traffic Buyleads display/purchase paths: legacy→Go migration, pgx pooling, Redis caching, and infra re-architecture for cost and p99.",
+    problem:
+      "Legacy services burned memory/CPU and p99 latency; infra cost and irrelevant-lead noise hurt marketplace conversion.",
+    approach:
+      "Spearheaded Go rewrite with pgx connection pooling and Redis; re-architected Buyleads display paths and optimized APIs on GCP/Kubernetes.",
+    impact: [
+      "+40% throughput · ~60% lower P99",
+      "₹2.47M annual infra savings",
+      "Stronger Buyleads conversion / relevance signal",
+    ],
+    tradeoffs: [
+      {
+        q: "Why Go + pgx over staying on legacy stacks?",
+        a: "Lower memory per request and explicit pooling cut p99 ~60% while unlocking ₹2.47M/year infra savings.",
+      },
+    ],
+    stackGroups: {
+      Language: ["Go"],
+      Data: ["PostgreSQL", "pgx", "Redis"],
+      Cloud: ["GCP", "Kubernetes"],
+      Domain: ["Buyleads", "Marketplace B2B"],
+    },
+  },
+  {
+    id: "indiamart-events-ai",
+    num: "05",
+    label: "IndiaMART · Events + AI",
+    title: "Kafka Fan-out, LLM Pipelines and LangGraph Scoring",
+    summary:
+      "Event-driven notifications at sub-second latency, GCP LLM document pipelines, and LangGraph lead scoring with sales stakeholders.",
+    problem:
+      "Engagement lagged without real-time fan-out; manual extraction and slow lead triage left revenue on the table.",
+    approach:
+      "Kafka + Redis pub/sub broadcaster; GCP LLM pipelines for 50K+ files/month; LangGraph workflows flagging ~20% of 8K+ weekly leads as high-risk.",
+    impact: [
+      "+51.7% platform transactions from real-time engagement",
+      "90% automation of manual extraction",
+      "8K+ leads/week scored · ~20% high-risk for follow-up",
+    ],
+    tradeoffs: [
+      {
+        q: "Why Kafka + Redis together?",
+        a: "Kafka for durable fan-out; Redis for hot pub/sub and sub-second delivery under concurrency.",
+      },
+    ],
+    stackGroups: {
+      Messaging: ["Kafka", "Redis"],
+      AI: ["LangGraph", "GCP LLM", "Vertex / Gemini"],
+      Language: ["Python", "Go"],
+      Domain: ["Marketplace B2B"],
+    },
   },
   {
     id: "artolio",
-    num: "05",
+    num: "06",
     label: "Personal · Marketplace",
     title: "Artolio (Gigsetu) — Hyperlocal Artist Marketplace",
     summary:
@@ -410,7 +455,7 @@ $ curl -s -X POST "$BFF/api/bookings" -d '{"artistId":"a_18","slot":"2026-08-01T
   },
   {
     id: "nl2sql",
-    num: "06",
+    num: "07",
     label: "Hackathon Winner · 2025",
     title: "NL-to-SQL RAG Engine",
     summary:
