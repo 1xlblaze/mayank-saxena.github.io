@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 
-const RESUME_PDF = `${import.meta.env.BASE_URL}Mayank_Saxena_Resume.pdf`;
+const RESUME_PDF = `${import.meta.env.BASE_URL}Mayank-August-2026-2.pdf`;
 
 function CodeSnippet({ title, language, code }) {
   const [open, setOpen] = useState(false);
@@ -690,7 +690,7 @@ export default function App() {
             <a className="btn btn-ghost" href="mailto:mayankidmsaxena@gmail.com">
               Let’s talk
             </a>
-            <a className="btn btn-ghost" href={RESUME_PDF} download="Mayank_Saxena_Resume.pdf">
+            <a className="btn btn-ghost" href={RESUME_PDF} download="Mayank-August-2026-2.pdf">
               Download Resume (PDF)
             </a>
           </div>
