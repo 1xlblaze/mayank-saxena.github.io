@@ -64,9 +64,9 @@ export function MetricsSection() {
             {pulse.visits} local session{pulse.visits === 1 ? "" : "s"}
           </p>
           <p className="pulse-note">
-              {pulse.global == null
-                ? "Privacy-first pulse: counted in this browser only. Optional Google Analytics stays off until a measurement ID is set."
-                : `Public counter ≈ ${Number(pulse.global).toLocaleString()} · no cookies unless you add a GA id.`}
+            {pulse.global == null
+              ? "Privacy-first pulse: counted in this browser only. Optional Google Analytics stays off until a measurement ID is set."
+              : `Public counter ≈ ${Number(pulse.global).toLocaleString()} · no cookies unless you add a GA id.`}
           </p>
         </div>
       ) : null}
