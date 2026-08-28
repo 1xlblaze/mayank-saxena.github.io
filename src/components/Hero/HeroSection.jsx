@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Download, Mail, ArrowRight } from "lucide-react";
+import { Calendar, Download, Mail, ArrowRight } from "lucide-react";
 import { GMAIL_COMPOSE, RESUME_PDF, SITE, TICKER } from "../../data/site.js";
 import { useMediaQuery, usePrefersReducedMotion } from "../../hooks/useMediaQuery.js";
 import { TypedTitle } from "./TypedTitle.jsx";
@@ -76,6 +76,9 @@ export function HeroSection() {
             </a>
             <a className="btn btn-ghost" href={GMAIL_COMPOSE} target="_blank" rel="noopener noreferrer">
               <Mail size={16} /> Let’s talk
+            </a>
+            <a className="btn btn-ghost" href="#schedule">
+              <Calendar size={16} /> Schedule a call
             </a>
             <a className="btn btn-ghost" href={RESUME_PDF} download="Mayank-August-2026-2.pdf">
               <Download size={16} /> Resume

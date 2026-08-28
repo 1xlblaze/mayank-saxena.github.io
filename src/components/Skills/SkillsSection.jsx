@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { radarSkills, skillGroups, techTimeline } from "../../data/skills.js";
 import { projects } from "../../data/projects.js";
 import { SITE } from "../../data/site.js";
-import { fetchGithubStats } from "../../utils/github.js";
+import { fetchGithubHeatmap, fetchGithubStats } from "../../utils/github.js";
 import { fadeUp } from "../../animations/variants.js";
 
 const Radar = lazy(() => import("./RadarChart.jsx"));
@@ -43,6 +43,66 @@ function GitHubStats() {
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+function GitHubHeatmap() {
+  const [heat, setHeat] = useState(null);
+  useEffect(() => {
+    fetchGithubHeatmap(SITE.githubUser).then(setHeat);
+  }, []);
+
+  if (!heat) return <p className="muted">Loading contribution graph…</p>;
+  if (!heat.weeks?.length) {
+    return (
+      <p className="muted">
+        Heatmap unavailable right now — the public graph is still on{" "}
+        <a href={SITE.github} target="_blank" rel="noreferrer">
+          github.com/{SITE.githubUser}
+        </a>
+        .
+      </p>
+    );
+  }
+
+  const level = (count) => {
+    if (!count) return 0;
+    if (count < 2) return 1;
+    if (count < 4) return 2;
+    if (count < 8) return 3;
+    return 4;
+  };
+
+  return (
+    <div className="heatmap-wrap">
+      <div className="heatmap-head">
+        <h3 className="subhead">Contribution heatmap</h3>
+        <span className="heatmap-note">
+          {heat.total.toLocaleString()} contributions in the last year · public GitHub activity
+        </span>
+      </div>
+      <div className="heatmap-scroll">
+        <div className="heatmap-grid" role="img" aria-label={`${heat.total} GitHub contributions in the last year`}>
+          {heat.weeks.map((week, wi) =>
+            week.map((day, di) => (
+              <span
+                key={`${wi}-${di}`}
+                className="hm-cell"
+                data-l={day ? level(day.count) : 0}
+                title={day ? `${day.date}: ${day.count}` : ""}
+              />
+            ))
+          )}
+        </div>
+      </div>
+      <div className="heatmap-legend" aria-hidden="true">
+        <span>Less</span>
+        {[0, 1, 2, 3, 4].map((l) => (
+          <i key={l} data-l={l} />
+        ))}
+        <span>More</span>
+      </div>
     </div>
   );
 }
@@ -89,6 +149,8 @@ export function SkillsSection() {
           </ol>
         </div>
       </div>
+
+      <GitHubHeatmap />
 
       <div className="skills">
         {skillGroups.map((group) => (

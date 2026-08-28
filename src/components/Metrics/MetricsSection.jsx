@@ -1,7 +1,9 @@
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { CAREER_METRICS, IMPACT_STRIP, SCALE_NOTES } from "../../data/metrics.js";
 import { AnimatedCounter } from "../ui/AnimatedCounter.jsx";
 import { fadeUp } from "../../animations/variants.js";
+import { fetchGlobalViews, getLocalPulse } from "../../utils/analytics.js";
 
 export function ImpactStrip() {
   return (
@@ -19,6 +21,14 @@ export function ImpactStrip() {
 }
 
 export function MetricsSection() {
+  const [pulse, setPulse] = useState(null);
+
+  useEffect(() => {
+    const local = getLocalPulse();
+    setPulse({ visits: local.visits, global: null });
+    fetchGlobalViews().then((global) => setPulse((p) => ({ visits: p?.visits ?? local.visits, global })));
+  }, []);
+
   return (
     <section id="impact" className="section wrap">
       <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp}>
@@ -46,6 +56,20 @@ export function MetricsSection() {
           </article>
         ))}
       </div>
+
+      {pulse ? (
+        <div className="pulse-card">
+          <div className="pulse-k">This visit</div>
+          <p className="pulse-v">
+            {pulse.visits} local session{pulse.visits === 1 ? "" : "s"}
+          </p>
+          <p className="pulse-note">
+            {pulse.global == null
+              ? "Privacy-first pulse: counted in this browser only. Optional Google Analytics stays off until a measurement ID is set."
+              : `Public counter ≈ ${Number(pulse.global).toLocaleString()} · no cookies unless you add a GA id.`}
+          </p>
+        </div>
+      ) : null}
     </section>
   );
 }

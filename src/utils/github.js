@@ -1,8 +1,9 @@
-const KEY = "ms-gh-stats";
+const STATS_KEY = "ms-gh-stats";
+const HEAT_KEY = "ms-gh-heat";
 
 export async function fetchGithubStats(user) {
   try {
-    const cached = sessionStorage.getItem(KEY);
+    const cached = sessionStorage.getItem(STATS_KEY);
     if (cached) return JSON.parse(cached);
 
     const [profileRes, repoRes] = await Promise.all([
@@ -22,9 +23,46 @@ export async function fetchGithubStats(user) {
         .slice(0, 3)
         .map((r) => ({ name: r.name, stars: r.stargazers_count, url: r.html_url })),
     };
-    sessionStorage.setItem(KEY, JSON.stringify(stats));
+    sessionStorage.setItem(STATS_KEY, JSON.stringify(stats));
     return stats;
   } catch {
     return { publicRepos: null, followers: null, stars: null, forks: null, top: [] };
   }
+}
+
+export async function fetchGithubHeatmap(user) {
+  try {
+    const cached = sessionStorage.getItem(HEAT_KEY);
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      if (!parsed.weeks?.length && parsed.days?.length) {
+        parsed.weeks = contributionsToWeeks(parsed.days);
+      }
+      return parsed;
+    }
+    const res = await fetch(`https://github-contributions-api.jogruber.de/v4/${user}`);
+    if (!res.ok) throw new Error("heat");
+    const data = await res.json();
+    const days = (data.contributions || []).slice(-371);
+    const total = days.reduce((n, d) => n + (d.count || 0), 0);
+    const payload = { days, weeks: contributionsToWeeks(days), total, year: new Date().getFullYear() };
+    sessionStorage.setItem(HEAT_KEY, JSON.stringify(payload));
+    return payload;
+  } catch {
+    return { days: [], weeks: [], total: 0, year: new Date().getFullYear() };
+  }
+}
+
+export function contributionsToWeeks(days) {
+  if (!days?.length) return [];
+  const first = new Date(`${days[0].date}T00:00:00`);
+  const pad = Number.isNaN(first.getTime()) ? 0 : first.getDay();
+  const cells = [...Array(pad).fill(null), ...days];
+  const weeks = [];
+  for (let i = 0; i < cells.length; i += 7) {
+    const chunk = cells.slice(i, i + 7);
+    while (chunk.length < 7) chunk.push(null);
+    weeks.push(chunk);
+  }
+  return weeks;
 }

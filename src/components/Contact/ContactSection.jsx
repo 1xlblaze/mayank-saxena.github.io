@@ -1,12 +1,21 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { Check, Copy, Mail, Download } from "lucide-react";
+import { Calendar, Check, Copy, Mail, Download } from "lucide-react";
 import { GMAIL_COMPOSE, RESUME_PDF, SITE } from "../../data/site.js";
+
+const WINDOWS = [
+  "Weekday 18:00–20:00 IST",
+  "Saturday 11:00–13:00 IST",
+  "Sunday 11:00–13:00 IST",
+  "Flexible — propose a time",
+];
 
 export function ContactSection() {
   const [copied, setCopied] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [sent, setSent] = useState(false);
+  const [mins, setMins] = useState("30");
+  const [windowLabel, setWindowLabel] = useState(WINDOWS[0]);
 
   const copyEmail = async () => {
     const text = SITE.email;
@@ -75,6 +84,42 @@ export function ContactSection() {
           <a className="btn btn-ghost light" href={RESUME_PDF} download="Mayank-August-2026-2.pdf">
             <Download size={16} /> Resume
           </a>
+        </div>
+
+        <div className="schedule-card" id="schedule">
+          <h3>Schedule a call</h3>
+          <p className="schedule-note">
+            No Calendly required. Pick a length and a window — Gmail opens with the time already filled so I can
+            confirm.
+          </p>
+          <div className="schedule-grid">
+            <label>
+              Length
+              <select value={mins} onChange={(e) => setMins(e.target.value)}>
+                <option value="20">20 min intro</option>
+                <option value="30">30 min deep-dive</option>
+                <option value="45">45 min architecture</option>
+              </select>
+            </label>
+            <label>
+              Window (IST)
+              <select value={windowLabel} onChange={(e) => setWindowLabel(e.target.value)}>
+                {WINDOWS.map((w) => (
+                  <option key={w}>{w}</option>
+                ))}
+              </select>
+            </label>
+            <a
+              className="btn btn-primary"
+              href={`${GMAIL_COMPOSE}&su=${encodeURIComponent(`${mins}-min intro — ${windowLabel}`)}&body=${encodeURIComponent(
+                `Hi Mayank,\n\nI'd like a ${mins}-minute call during ${windowLabel}.\n\nRole / team:\nTimezone:\n`
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Calendar size={16} /> Open calendar email
+            </a>
+          </div>
         </div>
 
         <form className="contact-form" onSubmit={onSubmit}>

@@ -11,12 +11,19 @@ import { SkillsSection } from "./components/Skills/SkillsSection.jsx";
 import { ExperienceSection } from "./components/Experience/ExperienceSection.jsx";
 import { PublicationsSection } from "./components/Publications/PublicationsSection.jsx";
 import { ContactSection } from "./components/Contact/ContactSection.jsx";
+import { bootOptionalGa, startPulse } from "./utils/analytics.js";
 
 const KONAMI = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
 
 export default function App() {
   const [ready, setReady] = useState(false);
   const [egg, setEgg] = useState(false);
+
+  useEffect(() => {
+    const pulse = startPulse();
+    bootOptionalGa();
+    return () => pulse.stop();
+  }, []);
 
   useEffect(() => {
     const t = requestAnimationFrame(() => setReady(true));

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ArchDiagram, DIAGRAM_HINTS } from "./ArchDiagram.jsx";
+import { ProjectPlayground } from "./ProjectPlayground.jsx";
 
 export function CodeSnippet({ title, language, code }) {
   const [open, setOpen] = useState(false);
@@ -209,6 +210,7 @@ export function ProjectModal({ project, onClose }) {
         {project.snippet && <CodeSnippet {...project.snippet} />}
         {project.beforeAfter && <BeforeAfter data={project.beforeAfter} />}
         {project.id === "lead-assist" && <PiiDemo />}
+        <ProjectPlayground project={project} />
         {project.volumes && (
           <div className="volume-grid">
             {project.volumes.map((v) => (
