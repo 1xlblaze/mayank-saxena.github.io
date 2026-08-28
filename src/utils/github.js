@@ -1,5 +1,5 @@
 const STATS_KEY = "ms-gh-stats";
-const HEAT_KEY = "ms-gh-heat";
+const HEAT_KEY = "ms-gh-heat-v2";
 
 export async function fetchGithubStats(user) {
   try {
@@ -43,7 +43,13 @@ export async function fetchGithubHeatmap(user) {
     const res = await fetch(`https://github-contributions-api.jogruber.de/v4/${user}`);
     if (!res.ok) throw new Error("heat");
     const data = await res.json();
-    const days = (data.contributions || []).slice(-371);
+    const all = (data.contributions || []).filter((d) => d?.date);
+    all.sort((a, b) => a.date.localeCompare(b.date));
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - 370);
+    const iso = cutoff.toISOString().slice(0, 10);
+    const today = new Date().toISOString().slice(0, 10);
+    const days = all.filter((d) => d.date >= iso && d.date <= today);
     const total = days.reduce((n, d) => n + (d.count || 0), 0);
     const payload = { days, weeks: contributionsToWeeks(days), total, year: new Date().getFullYear() };
     sessionStorage.setItem(HEAT_KEY, JSON.stringify(payload));

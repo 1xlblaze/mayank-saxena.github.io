@@ -21,7 +21,6 @@ export function startPulse() {
     local.visits += 1;
     local.last = Date.now();
     localStorage.setItem(LOCAL, JSON.stringify(local));
-    fetch("https://api.counterapi.dev/v1/1xlblaze/mayank-portfolio/up").catch(() => {});
   }
 
   const seen = new Set(["home"]);
@@ -66,8 +65,10 @@ export function getLocalPulse() {
 }
 
 export async function fetchGlobalViews() {
+  const url = import.meta.env.VITE_COUNTER_URL;
+  if (!url) return null;
   try {
-    const res = await fetch("https://api.counterapi.dev/v1/1xlblaze/mayank-portfolio");
+    const res = await fetch(url);
     if (!res.ok) return null;
     const data = await res.json();
     return typeof data.count === "number" ? data.count : data.value ?? null;
