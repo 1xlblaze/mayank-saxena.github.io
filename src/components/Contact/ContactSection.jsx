@@ -9,13 +9,33 @@ export function ContactSection() {
   const [sent, setSent] = useState(false);
 
   const copyEmail = async () => {
+    const text = SITE.email;
+    let ok = false;
     try {
-      await navigator.clipboard.writeText(SITE.email);
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+        ok = true;
+      }
+    } catch {
+      ok = false;
+    }
+    if (!ok) {
+      const el = document.createElement("textarea");
+      el.value = text;
+      el.setAttribute("readonly", "");
+      el.style.position = "fixed";
+      el.style.left = "-9999px";
+      document.body.appendChild(el);
+      el.select();
+      ok = document.execCommand("copy");
+      document.body.removeChild(el);
+    }
+    if (ok) {
       setCopied(true);
       toast.success("Email copied");
-      setTimeout(() => setCopied(false), 1800);
-    } catch {
-      toast.error("Copy failed — address is in the button below");
+      setTimeout(() => setCopied(false), 2200);
+    } else {
+      toast.error("Copy failed — use the email button");
     }
   };
 

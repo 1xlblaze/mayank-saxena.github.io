@@ -179,6 +179,12 @@ a:hover {
   color: var(--ink);
 }
 
+.logo:hover,
+.nav-links a:hover,
+.bottom-nav a:hover {
+  text-decoration: none;
+}
+
 .menu-btn {
   display: none;
   flex-direction: column;
@@ -601,6 +607,10 @@ a:hover {
   flex-wrap: wrap;
   gap: 0.5rem;
   margin: 1.75rem 0 0;
+}
+
+.swipe-hint {
+  display: none;
 }
 
 .chip,
@@ -1755,22 +1765,23 @@ a:hover {
 
   .bottom-nav {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     position: fixed;
     inset: auto 0 0;
     z-index: 110;
     background: color-mix(in srgb, var(--bg) 92%, transparent);
     backdrop-filter: blur(16px);
     border-top: 1px solid var(--line);
-    padding: 0.55rem 0.4rem calc(0.55rem + env(safe-area-inset-bottom));
+    padding: 0.65rem 0.25rem calc(0.65rem + env(safe-area-inset-bottom));
   }
 
   .bottom-nav a {
     text-align: center;
     color: var(--muted);
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 600;
     text-decoration: none;
+    min-width: 0;
   }
 
   .pcard-rail {
@@ -1779,6 +1790,15 @@ a:hover {
     scroll-snap-type: x mandatory;
     gap: 1rem;
     padding-bottom: 0.75rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+
+  .swipe-hint {
+    display: block;
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin-top: 0.65rem;
   }
 
   .pcard {

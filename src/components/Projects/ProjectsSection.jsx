@@ -54,6 +54,7 @@ export function ProjectsSection() {
             </button>
           ))}
         </div>
+        <p className="swipe-hint">Swipe the cards →</p>
       </div>
 
       <div className="wrap pcard-rail">

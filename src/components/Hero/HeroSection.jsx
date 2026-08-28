@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Download, Mail, ArrowRight } from "lucide-react";
 import { GMAIL_COMPOSE, RESUME_PDF, SITE, TICKER } from "../../data/site.js";
@@ -12,6 +12,18 @@ export function HeroSection() {
   const reduced = usePrefersReducedMotion();
   const isMobile = useMediaQuery("(max-width: 900px)");
   const mouse = useRef({ x: 0, y: 0 });
+  const heroRef = useRef(null);
+  const [heroInView, setHeroInView] = useState(true);
+
+  useEffect(() => {
+    const el = heroRef.current;
+    if (!el) return undefined;
+    const io = new IntersectionObserver(([entry]) => setHeroInView(entry.isIntersecting), {
+      threshold: 0.05,
+    });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   useEffect(() => {
     if (isMobile || reduced) return undefined;
@@ -28,13 +40,13 @@ export function HeroSection() {
   }, [isMobile, reduced]);
 
   return (
-    <header id="home" className="hero">
+    <header id="home" className="hero" ref={heroRef}>
       <div className="hero-atmosphere" aria-hidden="true">
         <div className="orb orb-a" />
         <div className="orb orb-b" />
         <div className="orb orb-c" />
       </div>
-      {!reduced && !isMobile && (
+      {!reduced && !isMobile && heroInView && (
         <Suspense fallback={null}>
           <ParticleBackground mouse={mouse} />
         </Suspense>

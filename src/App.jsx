@@ -39,7 +39,8 @@ export default function App() {
     <div className={`page ${ready ? "is-ready" : ""}`}>
       <Seo />
       <Toaster
-        position="bottom-right"
+        position="top-center"
+        containerStyle={{ zIndex: 400, top: 72 }}
         toastOptions={{
           style: { background: "#0e151d", color: "#f2f5f8", border: "1px solid rgba(242,245,248,.12)" },
         }}
