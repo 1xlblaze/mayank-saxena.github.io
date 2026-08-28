@@ -1,6 +1,7 @@
-import { StrictMode } from 'react'
-import { renderToPipeableStream } from 'react-dom/server'
-import App from './App'
+import { StrictMode } from "react";
+import { renderToPipeableStream } from "react-dom/server";
+import { HelmetProvider } from "react-helmet-async";
+import App from "./App";
 
 /**
  * @param {string} _url
@@ -9,8 +10,10 @@ import App from './App'
 export function render(_url, options) {
   return renderToPipeableStream(
     <StrictMode>
-      <App />
+      <HelmetProvider>
+        <App />
+      </HelmetProvider>
     </StrictMode>,
-    options,
-  )
+    options
+  );
 }
