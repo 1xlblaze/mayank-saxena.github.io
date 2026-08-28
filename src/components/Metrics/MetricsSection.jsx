@@ -23,7 +23,7 @@ export function MetricsSection() {
     <section id="impact" className="section wrap">
       <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp}>
         <div className="section-kicker">Career impact</div>
-        <h2 className="section-title">Numbers a recruiter can verify in a conversation.</h2>
+        <h2 className="section-title">Proof you can take into a conversation.</h2>
       </motion.div>
 
       <div className="dash-grid">

@@ -22,7 +22,7 @@ export function Seo() {
   return (
     <Helmet>
       <title>{SITE.name} — {SITE.title}</title>
-      <meta name="description" content={SITE.summary} />
+      <meta name="description" content={SITE.pitch} />
       <link rel="canonical" href={url} />
       <meta property="og:type" content="website" />
       <meta property="og:title" content={`${SITE.name} — ${SITE.headline}`} />

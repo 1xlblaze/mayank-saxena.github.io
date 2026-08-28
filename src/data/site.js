@@ -10,9 +10,11 @@ export const SITE = {
   github: "https://github.com/1xlblaze",
   githubUser: "1xlblaze",
   linkedin: "https://linkedin.com/in/themayanksaxena",
-  headline: "Where Distributed Systems Meet Agentic AI",
+  headline: "I build systems people can trust at scale",
+  pitch:
+    "I build the software behind loans, marketplaces, and AI assistants — so it stays fast, private, and affordable to run.",
   summary:
-    "Senior Software Engineer specializing in high-throughput backend architecture, real-time event-driven systems, and production agentic AI pipelines.",
+    "Senior Software Engineer at Paytm Lending. Distributed systems, backend architecture, and production AI agents. ₹2.47M saved. 60% faster. Open to opportunities.",
   roles: [
     "Senior Software Engineer",
     "Backend Architect",
@@ -34,12 +36,12 @@ export const NAV_LINKS = [
 ];
 
 export const TICKER = [
-  { value: "40%", label: "↑ Throughput" },
-  { value: "₹2.47M", label: "Infra saved / yr" },
-  { value: "60%", label: "↓ P99 latency" },
-  { value: "10K+", label: "Concurrent SSE" },
-  { value: "22%", label: "Fewer drop-offs" },
-  { value: "35%", label: "Less PR review" },
-  { value: "20+", label: "Microservices" },
-  { value: "0%", label: "Delay rate" },
+  { value: "₹2.47M", label: "saved every year" },
+  { value: "60%", label: "faster responses" },
+  { value: "40%", label: "more capacity" },
+  { value: "10K+", label: "live connections" },
+  { value: "22%", label: "fewer drop-offs" },
+  { value: "35%", label: "less review time" },
+  { value: "20+", label: "services shipped" },
+  { value: "0%", label: "delay rate" },
 ];

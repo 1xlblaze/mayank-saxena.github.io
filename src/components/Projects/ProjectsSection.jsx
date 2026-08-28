@@ -31,9 +31,9 @@ export function ProjectsSection() {
       <div className="wrap">
         <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }} variants={fadeUp}>
           <div className="section-kicker">Selected work</div>
-          <h2 className="section-title">Seven production systems. Architecture, trade-offs, impact.</h2>
+          <h2 className="section-title">Real products. Real numbers. The thinking behind them.</h2>
           <p className="lead">
-            Flip a card for the numbers. Open the case study for diagrams, code, and the decisions behind them.
+            Flip a card for the impact. Open a case study if you want architecture, code, and the decisions.
           </p>
         </motion.div>
 

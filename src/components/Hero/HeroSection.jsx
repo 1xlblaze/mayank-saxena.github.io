@@ -69,10 +69,10 @@ export function HeroSection() {
             {SITE.last}
           </h1>
           <TypedTitle roles={SITE.roles} reduced={reduced} />
-          <p className="hero-line">{SITE.headline}. {SITE.summary}</p>
+          <p className="hero-line">{SITE.pitch}</p>
           <div className="cta-row">
             <a className="btn btn-primary" href="#work">
-              View selected work <ArrowRight size={16} />
+              See my work <ArrowRight size={16} />
             </a>
             <a className="btn btn-ghost" href={GMAIL_COMPOSE} target="_blank" rel="noopener noreferrer">
               <Mail size={16} /> Let’s talk

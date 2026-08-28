@@ -14,10 +14,10 @@ export const CAREER_METRICS = [
 ];
 
 export const IMPACT_STRIP = [
-  { value: "60%", label: "Latency reduction" },
-  { value: "10K+", label: "SSE sessions" },
-  { value: "22%", label: "Conversion boost" },
-  { value: "₹2.47M", label: "Infra saved / year" },
+  { value: "60%", label: "Faster responses" },
+  { value: "10K+", label: "Live connections" },
+  { value: "22%", label: "More completions" },
+  { value: "₹2.47M", label: "Saved / year" },
 ];
 
 export const SCALE_NOTES = [

@@ -61,7 +61,7 @@ export function SkillsSection() {
     <section id="skills" className="section wrap">
       <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp}>
         <div className="section-kicker">Capabilities</div>
-        <h2 className="section-title">Production stack, not a buzzword cloud.</h2>
+        <h2 className="section-title">Tools I actually ship with.</h2>
       </motion.div>
 
       <div className="skills-layout">

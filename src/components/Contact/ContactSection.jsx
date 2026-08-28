@@ -56,8 +56,8 @@ export function ContactSection() {
     <section id="contact" className="contact-band">
       <div className="wrap contact-inner">
         <div className="section-kicker light">Contact</div>
-        <h2>Building high-throughput, real-time, or agentic systems?</h2>
-        <p>Open to senior backend, platform, and agentic systems conversations.</p>
+        <h2>Have a role, a product, or a hard problem?</h2>
+        <p>Hiring, collaborating, or just curious — I read every note.</p>
 
         <div className="cta-row">
           <a className="btn btn-primary" href={GMAIL_COMPOSE} target="_blank" rel="noopener noreferrer">

@@ -10,7 +10,7 @@ export function ExperienceSection() {
     <section id="experience" className="section wrap">
       <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp}>
         <div className="section-kicker">Experience</div>
-        <h2 className="section-title">Where the systems shipped.</h2>
+        <h2 className="section-title">Where the work went live.</h2>
       </motion.div>
 
       <div className="tl">

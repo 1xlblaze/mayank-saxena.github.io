@@ -56,13 +56,14 @@ export default function App() {
 
       <section className="section wrap about-block">
         <div className="section-kicker">About</div>
-        <h2 className="section-title">Ownership at scale — latency, reliability, privacy.</h2>
+        <h2 className="section-title">I make high-traffic systems feel instant.</h2>
         <p className="lead">
-          Over 4+ years across FinTech lending and B2B/B2C marketplaces, I build distributed backend systems designed
-          for low latency, zero-downtime reliability, and privacy at scale. Specialized in Go/NestJS microservices,
-          Kafka/Redis event streaming, Kubernetes orchestration, and production agentic AI (LangGraph, MCP, Cloud
-          Agents). Track record of saving ₹2.47M in annual infra costs, serving 10K+ concurrent SSE sessions, and
-          driving major conversion wins.
+          Over 4+ years at Paytm Lending and IndiaMART, I take messy backends and make them faster, cheaper, and safer
+          for the people who use them. Employee of the Year. Two IEEE papers. ₹2.47M saved in a year. If you like
+          diagrams and trade-offs, the work below is for you — if you just want proof, start with the numbers.
+        </p>
+        <p className="lead" style={{ marginTop: "1rem" }}>
+          Day to day: Go, NestJS, Kafka, Redis, Kubernetes, and production AI agents (LangGraph, MCP, Cloud Agents).
         </p>
       </section>
 
