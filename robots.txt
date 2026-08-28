@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://1xlblaze.github.io/mayank-saxena.github.io/sitemap.xml
